@@ -611,7 +611,7 @@ C<< code(\&subref) >>
 =back
 
 As an alternative to using those functions, Test::Modern exports a constant
-L<TD> upon which you can call them as methods:
+C<TD> upon which you can call them as methods:
 
    # like Test::Deep::bag(@elements)
    TD->bag(@elements)
