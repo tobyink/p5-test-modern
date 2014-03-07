@@ -266,6 +266,8 @@ sub Test::Modern::_TD::AUTOLOAD
 
 1;
 
+## no Test::Tabs
+
 __END__
 
 =pod
@@ -611,7 +613,8 @@ C<< code(\&subref) >>
 As an alternative to using those functions, Test::Modern exports a constant
 L<TD> upon which you can call them as methods:
 
-   TD->bag(@elements)     # like Test::Deep::bag(@elements)
+   # like Test::Deep::bag(@elements)
+   TD->bag(@elements)
 
 =head2 Features inspired by Test::Moose
 
@@ -708,21 +711,22 @@ Exports the L</"Features from Test::LongString">.
 
 Exports L<cmp_deeply and TD|/"Features from Test::Deep">.
 
+=item C<< -deeper >>
+
+Exports I<all> the L</"Features from Test::Deep">.
+
 =item C<< -moose >>
 
 Exports the L</"Features inspired by Test::Moose">.
 
 =item C<< -default >>
 
-Exports the default features -- all of the above except C<< -deprecated >>.
-
-=item C<< -deeper >>
-
-Exports I<all> the L</"Features from Test::Deep">.
+Exports the default features -- all of the above except C<< -deprecated >>
+and C<< -deeper >>.
 
 =item C<< -all >>
 
-Exports all of the above features including C<< -deprecated >> and
+Exports all of the above features I<including> C<< -deprecated >> and
 C<< -deeper >>.
 
 =item C<< -author >>, C<< -extended >>, C<< -interactive >>, and C<< -release >>
@@ -749,6 +753,7 @@ L<Test::Fatal>,
 L<Test::Warnings>,
 L<Test::API>,
 L<Test::LongString>,
+L<Test::Deep>,
 L<Test::Moose>,
 L<Test::Requires>,
 L<Test::DescribeMe>.
