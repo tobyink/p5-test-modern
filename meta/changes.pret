@@ -11,3 +11,10 @@
 		item "Also export functions from Test::LongString."^^Addition;
 	].
 
+`Test-Modern 0.000_03 cpan:TOBYINK`
+	issued  2014-03-07;
+	label   "Preview";
+	changeset [
+		item "Also export functions from Test::Deep."^^Addition;
+	].
+
