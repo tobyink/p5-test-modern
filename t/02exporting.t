@@ -46,21 +46,6 @@ sub exports_ok ($$$)
 	);
 }
 
-my %tmp = (
-	more     => [qw(
-		ok is isnt like unlike is_deeply cmp_ok new_ok isa_ok can_ok
-		pass fail
-		diag note explain
-		subtest
-		skip todo_skip plan done_testing BAIL_OUT
-	)],
-	fatal    => [qw( exception )],
-	warnings => [qw( warnings warning )],
-	api      => [qw( public_ok import_ok class_api_ok )],
-	moose    => [qw( does_ok )],
-	deprecated => [qw( use_ok require_ok eq_array eq_hash eq_set )],
-);
-
 my @defaults = qw/
 	$TODO
 	ok is isnt like unlike is_deeply cmp_ok new_ok isa_ok can_ok
@@ -72,6 +57,8 @@ my @defaults = qw/
 	warnings warning
 	public_ok import_ok class_api_ok
 	does_ok
+	is_string is_string_nows like_string unlike_string
+	contains_string lacks_string
 /;
 
 exports_ok(

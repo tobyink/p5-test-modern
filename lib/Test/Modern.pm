@@ -14,6 +14,7 @@ use Test::More       0.96;
 use Test::API        0.003;
 use Test::Fatal      0.007;
 use Test::Warnings   0.009 qw( warning warnings );
+use Test::LongString 0.15;
 use Try::Tiny        0.15  qw( try catch );
 
 my %HINTS;
@@ -77,11 +78,15 @@ our %EXPORT_TAGS = (
 	warnings => [qw( warnings warning )],
 	api      => [qw( public_ok import_ok class_api_ok )],
 	moose    => [qw( does_ok )],
+	strings  => [qw(
+		is_string is_string_nows like_string unlike_string
+		contains_string lacks_string
+	)],
 	deprecated => [qw( use_ok require_ok eq_array eq_hash eq_set )],
 	%HINTS,
 );
 our @EXPORT_OK = map(@$_, grep { ref($_) eq 'ARRAY' } values(%EXPORT_TAGS));
-our @EXPORT    = map(@{$EXPORT_TAGS{$_}}, qw(more fatal warnings api moose));
+our @EXPORT    = map(@{$EXPORT_TAGS{$_}}, qw(more fatal warnings api moose strings));
 
 # Here we check to see if the import list consists
 # only of hints. If so, we add @EXPORT to the list.
@@ -266,8 +271,8 @@ Test::Modern - commonly used test functions and features for modern Perl code
 =head1 DESCRIPTION
 
 Test::Modern provides the best features of L<Test::More>, L<Test::Fatal>,
-L<Test::Warnings>, and L<Test::API>, as well as ideas from L<Test::Requires>,
-L<Test::DescribeMe>, and L<Test::Moose>.
+L<Test::Warnings>, L<Test::API>, and L<Test::LongString>, as well as ideas
+from L<Test::Requires>, L<Test::DescribeMe>, and L<Test::Moose>.
 
 Test::Modern also automatically imposes L<strict> and L<warnings> on your
 script.
@@ -436,6 +441,38 @@ test to fail.
 
 =back
 
+=head2 Features from Test::LongString
+
+Test::Modern exports the following subs from L<Test::LongString>:
+
+=over
+
+=item *
+
+C<< is_string($got, $expected, $description) >>
+
+=item *
+
+C<< is_string_nows($got, $expected, $description) >>
+
+=item *
+
+C<< like_string($got, $regexp, $description) >>
+
+=item *
+
+C<< unlike_string($got, $regexp, $description) >>
+
+=item *
+
+C<< contains_string($haystack, $needle, $description) >>
+
+=item *
+
+C<< lacks_string($haystack, $needle, $description) >>
+
+=back
+
 =head2 Features inspired by Test::Moose
 
 =over
@@ -523,6 +560,10 @@ Exports the L</"Features from Test::Warnings">.
 
 Exports the L</"Features from Test::API">, including C<class_api_ok>.
 
+=item C<< -strings >>
+
+Exports the L</"Features from Test::LongString">.
+
 =item C<< -moose >>
 
 Exports the L</"Features inspired by Test::Moose">.
@@ -558,6 +599,7 @@ L<Test::More>,
 L<Test::Fatal>,
 L<Test::Warnings>,
 L<Test::API>,
+L<Test::LongString>,
 L<Test::Moose>,
 L<Test::Requires>,
 L<Test::DescribeMe>.
