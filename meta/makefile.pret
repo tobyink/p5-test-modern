@@ -10,6 +10,7 @@
 	:runtime-requirement    [ :on "Test::Fatal 0.007"^^:CpanId ];
 	:runtime-requirement    [ :on "Test::API 0.003"^^:CpanId ];
 	:runtime-requirement    [ :on "Test::LongString 0.15"^^:CpanId ];
+	:runtime-requirement    [ :on "Test::Deep 0.111"^^:CpanId ];
 	:runtime-requirement    [ :on "Test::Warnings 0.009"^^:CpanId ];
 	:runtime-requirement    [ :on "Try::Tiny 0.15"^^:CpanId ];
 	:test-conflict          [ :on "Local::This::Probably::Does::Not::Exist"^^:CpanId ];

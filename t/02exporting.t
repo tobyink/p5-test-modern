@@ -59,6 +59,7 @@ my @defaults = qw/
 	does_ok
 	is_string is_string_nows like_string unlike_string
 	contains_string lacks_string
+	cmp_deeply TD
 /;
 
 exports_ok(

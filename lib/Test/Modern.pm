@@ -15,6 +15,7 @@ use Test::API        0.003;
 use Test::Fatal      0.007;
 use Test::Warnings   0.009 qw( warning warnings );
 use Test::LongString 0.15;
+use Test::Deep       0.111 qw( :v1 );
 use Try::Tiny        0.15  qw( try catch );
 
 my %HINTS;
@@ -82,11 +83,19 @@ our %EXPORT_TAGS = (
 		is_string is_string_nows like_string unlike_string
 		contains_string lacks_string
 	)],
+	deep     => [qw( cmp_deeply TD )],
+	deeper   => [qw(
+		cmp_deeply TD
+		ignore methods listmethods shallow noclass useclass
+		re superhashof subhashof bag superbagof subbagof
+		set supersetof subsetof all any obj_isa array_each
+		str num bool code
+	)],
 	deprecated => [qw( use_ok require_ok eq_array eq_hash eq_set )],
 	%HINTS,
 );
 our @EXPORT_OK = map(@$_, grep { ref($_) eq 'ARRAY' } values(%EXPORT_TAGS));
-our @EXPORT    = map(@{$EXPORT_TAGS{$_}}, qw(more fatal warnings api moose strings));
+our @EXPORT    = map(@{$EXPORT_TAGS{$_}}, qw(more fatal warnings api moose strings deep));
 
 # Here we check to see if the import list consists
 # only of hints. If so, we add @EXPORT to the list.
@@ -240,6 +249,21 @@ WHOA
 	return $ok;
 }
 
+sub _generate_TD
+{
+	my $_td = bless(do { my $x = 1; \$x }, 'Test::Modern::_TD');
+	return sub () { $_td };
+}
+
+sub Test::Modern::_TD::AUTOLOAD
+{
+	shift;
+	my ($method) = ($Test::Modern::_TD::AUTOLOAD =~ /(\w+)\z/);
+	my $coderef = 'Test::Deep'->can($method)
+		or die("Test::Deep::$method not found");
+	$coderef->(@_);
+}
+
 1;
 
 __END__
@@ -271,8 +295,9 @@ Test::Modern - commonly used test functions and features for modern Perl code
 =head1 DESCRIPTION
 
 Test::Modern provides the best features of L<Test::More>, L<Test::Fatal>,
-L<Test::Warnings>, L<Test::API>, and L<Test::LongString>, as well as ideas
-from L<Test::Requires>, L<Test::DescribeMe>, and L<Test::Moose>.
+L<Test::Warnings>, L<Test::API>, L<Test::LongString>, and L<Test::Deep>,
+as well as ideas from L<Test::Requires>, L<Test::DescribeMe>, and
+L<Test::Moose>.
 
 Test::Modern also automatically imposes L<strict> and L<warnings> on your
 script.
@@ -473,6 +498,121 @@ C<< lacks_string($haystack, $needle, $description) >>
 
 =back
 
+=head2 Features from Test::Deep
+
+Test::Modern exports the following subs from L<Test::Deep>:
+
+=over
+
+=item *
+
+C<< cmp_deeply($got, $expected, $description) >>
+
+=back
+
+The following are not exported by default, but can be exported upon request:
+
+=over
+
+=item *
+
+C<< ignore() >>
+
+=item *
+
+C<< methods(%hash) >>
+
+=item *
+
+C<< listmethods(%hash) >>
+
+=item *
+
+C<< shallow($thing) >>
+
+=item *
+
+C<< noclass($thing) >>
+
+=item *
+
+C<< useclass($thing) >>
+
+=item *
+
+C<< re($regexp, $capture_data, $flags) >>
+
+=item *
+
+C<< superhashof(\%hash) >>
+
+=item *
+
+C<< subhashof(\%hash) >>
+
+=item *
+
+C<< bag(@elements) >>
+
+=item *
+
+C<< set(@elements) >>
+
+=item *
+
+C<< superbagof(@elements) >>
+
+=item *
+
+C<< subbagof(@elements) >>
+
+=item *
+
+C<< supersetof(@elements) >>
+
+=item *
+
+C<< subsetof(@elements) >>
+
+=item *
+
+C<< all(@expecteds) >>
+
+=item *
+
+C<< any(@expecteds) >>
+
+=item *
+
+C<< obj_isa($class) >>
+
+=item *
+
+C<< array_each($thing) >>
+
+=item *
+
+C<< str($string) >>
+
+=item *
+
+C<< num($number, $tolerance) >>
+
+=item *
+
+C<< bool($value) >>
+
+=item *
+
+C<< code(\&subref) >>
+
+=back
+
+As an alternative to using those functions, Test::Modern exports a constant
+L<TD> upon which you can call them as methods:
+
+   TD->bag(@elements)     # like Test::Deep::bag(@elements)
+
 =head2 Features inspired by Test::Moose
 
 =over
@@ -564,6 +704,10 @@ Exports the L</"Features from Test::API">, including C<class_api_ok>.
 
 Exports the L</"Features from Test::LongString">.
 
+=item C<< -deep >>
+
+Exports L<cmp_deeply and TD|/"Features from Test::Deep">.
+
 =item C<< -moose >>
 
 Exports the L</"Features inspired by Test::Moose">.
@@ -572,9 +716,14 @@ Exports the L</"Features inspired by Test::Moose">.
 
 Exports the default features -- all of the above except C<< -deprecated >>.
 
+=item C<< -deeper >>
+
+Exports I<all> the L</"Features from Test::Deep">.
+
 =item C<< -all >>
 
-Exports all of the above features including C<< -deprecated >>.
+Exports all of the above features including C<< -deprecated >> and
+C<< -deeper >>.
 
 =item C<< -author >>, C<< -extended >>, C<< -interactive >>, and C<< -release >>
 
