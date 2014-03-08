@@ -259,6 +259,7 @@ sub Test::Modern::_TD::AUTOLOAD
 {
 	shift;
 	my ($method) = ($Test::Modern::_TD::AUTOLOAD =~ /(\w+)\z/);
+	return if $method eq 'DESTROY';
 	my $coderef = 'Test::Deep'->can($method)
 		or die("Test::Deep::$method not found");
 	$coderef->(@_);
