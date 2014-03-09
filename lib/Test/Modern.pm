@@ -94,8 +94,16 @@ our %EXPORT_TAGS = (
 	deprecated => [qw( use_ok require_ok eq_array eq_hash eq_set )],
 	%HINTS,
 );
-our @EXPORT_OK = map(@$_, grep { ref($_) eq 'ARRAY' } values(%EXPORT_TAGS));
-our @EXPORT    = map(@{$EXPORT_TAGS{$_}}, qw(more fatal warnings api moose strings deep));
+
+our @EXPORT_OK = (
+	'object_ok',
+	map(@$_, grep { ref($_) eq 'ARRAY' } values(%EXPORT_TAGS)),
+);
+
+our @EXPORT = (
+	'object_ok',
+	map(@{$EXPORT_TAGS{$_}}, qw(more fatal warnings api moose strings deep)),
+);
 
 # Here we check to see if the import list consists
 # only of hints. If so, we add @EXPORT to the list.
@@ -247,6 +255,62 @@ WHOA
 	}
 	
 	return $ok;
+}
+
+sub object_ok
+{
+	local $Test::Builder::Level = $Test::Builder::Level + 1;
+	
+	my $object = shift;
+	my $name   = (@_%2) ? shift : '$object';
+	my %tests  = @_;
+	
+	subtest("$name ok", sub
+	{
+		if (ref($object) eq q(CODE))
+		{
+			try {
+				my $tmp = $object->();
+				die 'coderef did not return an object'
+					unless ref($tmp);
+				$object = $tmp;
+				pass("instantiate $name");
+			}
+			catch {
+				fail("instantiate $name");
+				diag("instantiating $name threw an exception: $_");
+			}
+		}
+		
+		ok(Scalar::Util::blessed($object), "$name is blessed")
+			or return;
+		
+		if (exists($tests{isa}))
+		{
+			my @classes = ref($tests{isa}) eq q(ARRAY) ? @{$tests{isa}} : $tests{isa};
+			isa_ok($object, $_, $name) for @classes;
+		}
+		
+		if (exists($tests{does}))
+		{
+			my @roles = ref($tests{does}) eq q(ARRAY) ? @{$tests{does}} : $tests{does};
+			does_ok($object, $_, $name) for @roles;
+		}
+		
+		if (exists($tests{can}))
+		{
+			my @methods = ref($tests{can}) eq q(ARRAY) ? @{$tests{can}} : $tests{can};
+			can_ok($object, @methods);
+		}
+		
+		if (exists($tests{api}))
+		{
+			my @methods = ref($tests{api}) eq q(ARRAY) ? @{$tests{api}} : $tests{api};
+			class_api_ok(ref($object), @methods);
+		}
+		
+		done_testing;
+	});
 }
 
 sub _generate_TD
@@ -672,6 +736,34 @@ C<< use Test::Modern -extended >>
 =item *
 
 C<< use Test::Modern -interactive >>
+
+=back
+
+=head2 Brand Spanking New Features
+
+=over
+
+=item *
+
+C<< object_ok($object, $name, %tests) >>
+
+Runs a gamut of subtests on an object:
+
+   object_ok(
+      $object,
+      $name,
+      isa   => \@classes,
+      does  => \@roles,
+      can   => \@methods,
+      api   => \@methods,
+   );
+
+C<< $object >> may be a blessed object, or an unblessed coderef which
+returns a blessed object. The C<< isa >> test runs C<< isa_ok >>; the
+C<< does >> test runs C<< does_ok >>, the C<< can >> test runs
+C<< can_ok >>, and the C<< api >> test runs C<< class_api_ok >>. Any of
+the test hash keys may be omitted, in which case that test will not be
+run. C<< $name >> may be omitted.
 
 =back
 
