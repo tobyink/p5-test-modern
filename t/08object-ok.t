@@ -34,6 +34,8 @@ BEGIN {
 	$INC{'YYY.pm'} = __FILE__;
 };
 
+*UNIVERSAL::DOES = \&UNIVERSAL::isa
+	unless exists(&UNIVERSAL::DOES);
 
 object_ok(
 	sub { bless [], 'YYY' },
