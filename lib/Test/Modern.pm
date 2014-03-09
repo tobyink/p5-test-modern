@@ -817,12 +817,12 @@ Exports the L</"Features inspired by Test::Moose">.
 =item C<< -default >>
 
 Exports the default features -- all of the above except C<< -deprecated >>
-and C<< -deeper >>.
+and C<< -deeper >>. Also exports C<object_ok>.
 
 =item C<< -all >>
 
-Exports all of the above features I<including> C<< -deprecated >> and
-C<< -deeper >>.
+Exports all of the above features I<including> C<< -deprecated >>,
+C<< -deeper >>, and C<object_ok>.
 
 =item C<< -author >>, C<< -extended >>, C<< -interactive >>, and C<< -release >>
 
