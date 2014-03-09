@@ -48,8 +48,7 @@ system "fatpack tree `cat packlists`";
 # Strip pod (this roughly halves the output module size)
 for my $file ( PIR->new->file->all('fatlib') )
 {
-	system podstrip => $file, "tmp.pm";
-	system mv => "tmp.pm", $file;
+	system perlstrip => qw( -c -s ), $file;
 }
 
 # Fatpack!
