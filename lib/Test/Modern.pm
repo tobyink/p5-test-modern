@@ -345,6 +345,8 @@ __END__
 
 =item C<class_api_ok>
 
+=item C<object_ok>
+
 =end trustme
 
 =head1 NAME
