@@ -32,7 +32,7 @@
 		item "Added an object_ok test function."^^Addition;
 	].
 
-`Test-Modern 0.000_05 cpan:TOBYINK`
+`Test-Modern 0.000_06 cpan:TOBYINK`
 	issued  2014-03-09;
 	label   "Preview";
 	changeset [
