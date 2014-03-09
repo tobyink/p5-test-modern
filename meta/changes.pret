@@ -25,3 +25,10 @@
 		item "Fix error messages related to Test::Modern::_TD::DESTROY getting called in global cleanup."^^Bugfix;
 	].
 
+`Test-Modern 0.000_05 cpan:TOBYINK`
+	issued  2014-03-09;
+	label   "Preview";
+	changeset [
+		item "Added an object_ok test function."^^Addition;
+	].
+

@@ -5,7 +5,7 @@ use warnings;
 package Test::Modern;
 
 our $AUTHORITY = 'cpan:TOBYINK';
-our $VERSION   = '0.000_04';
+our $VERSION   = '0.000_05';
 
 use Exporter::Tiny   0.030 qw();
 use Import::Into     1.002 qw();
