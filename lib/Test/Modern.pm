@@ -49,6 +49,16 @@ $HINTS{ requires } = sub
 	my %requires = %{ $_[2] };
 	for my $module (sort keys %requires)
 	{
+		if ($module eq 'perl')
+		{
+			next if !defined($requires{$module});
+			next if $] >= $requires{$module};
+			return plan skip_all => sprintf(
+				"Test requires Perl %s",
+				$requires{$module},
+			);
+		}
+		
 		try {
 			&require_module(
 				$module,
@@ -731,6 +741,7 @@ This will skip the entire test script if the requirements are not met.
 For example:
 
    use Test::Modern -requires => {
+		'perl'                 => '5.010',
       'Moose'                => '2.11',
       'namespace::autoclean' => undef,
    };
