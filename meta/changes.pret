@@ -39,3 +39,11 @@
 		item "Help Perl 5.8 pass the t/08object-ok.t test case."^^Tests;
 	].
 
+`Test-Modern 0.000_07 cpan:TOBYINK`
+	issued  2014-03-10;
+	label   "Preview";
+	changeset [
+		item "object_ok now has a `more` test."^^Addition;
+		item "object_ok will now BAIL_OUT(!!) if you pass unknown hash keys in %tests."^^Change;
+	].
+
