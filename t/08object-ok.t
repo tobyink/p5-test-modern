@@ -37,7 +37,7 @@ BEGIN {
 *UNIVERSAL::DOES = \&UNIVERSAL::isa
 	unless exists(&UNIVERSAL::DOES);
 
-object_ok(
+my $return = object_ok(
 	sub { bless [], 'YYY' },
 	'$y',
 	isa   => 'YYY',
@@ -50,5 +50,7 @@ object_ok(
 		is($object->yyy, 2);
 	},
 );
+
+isa_ok($return, 'YYY', '$return');
 
 done_testing;

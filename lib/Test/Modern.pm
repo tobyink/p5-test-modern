@@ -265,7 +265,7 @@ sub object_ok
 	my $name   = (@_%2) ? shift : '$object';
 	my %tests  = @_;
 	
-	subtest("$name ok", sub
+	my $result = subtest("$name ok", sub
 	{
 		if (ref($object) eq q(CODE))
 		{
@@ -332,6 +332,9 @@ sub object_ok
 		my $huh = join q[, ], sort keys %tests;
 		BAIL_OUT("object_ok cannot understand: $huh");
 	}
+	
+	# return $object
+	$result ? $object : ();
 }
 
 sub _generate_TD
@@ -799,9 +802,12 @@ script to end.
 Any of the test hash keys may be omitted, in which case that test will
 not be run. C<< $name >> may be omitted.
 
+If the test succeeds, it returns the object (which may be useful for
+further tests). Otherwise, returns C<undef>.
+
 Practical example:
 
-   object_ok(
+   my $bob = object_ok(
       sub { Employee->new(name => 'Robert Jones') },
       '$bob',
       isa   => [qw( Employee Person Moo::Object )],
@@ -812,6 +818,12 @@ Practical example:
          is($object->name, "Robert Jones");
          like($object->employee_number, qr/^[0-9]+$/);
       },
+   );
+   
+   # make further use of $bob
+   object_ok(
+      sub { $bob->line_manager },
+      isa   => [qw( Person )],
    );
 
 =back
