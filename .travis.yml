@@ -21,6 +21,21 @@ install:
   - cpanm -n Test::API
 script:
   - "HARNESS_IS_VERBOSE=1 prove -Ilib t"
+matrix:
+  include:
+    - perl: "5.6.2"
+      install:
+        - "perl -Idevel.travis -MCPAN -e'install q(Test::More)'"
+        - "perl -Idevel.travis -MCPAN -e'install q(Exporter::Tiny)'"
+        - "perl -Idevel.travis -MCPAN -e'install q(Import::Into)'"
+        - "perl -Idevel.travis -MCPAN -e'install q(Module::Runtime)'"
+        - "perl -Idevel.travis -MCPAN -e'install q(Try::Tiny)'"
+        - "perl -Idevel.travis -MCPAN -e'install q(Test::Fatal)'"
+        - "perl -Idevel.travis -MCPAN -e'install q(Test::LongString)'"
+        - "perl -Idevel.travis -MCPAN -e'install q(Test::Deep)'"
+        - "perl -Idevel.travis -MCPAN -e'install q(Test::Warnings)'"
+      script:
+        - "HARNESS_IS_VERBOSE=1 perl /home/travis/perl5/perlbrew/perls/5.6.2/bin/prove -r -Ilib -Iinc t"
 #notifications:
 #  irc:
 #    channels:
