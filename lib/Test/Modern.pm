@@ -289,28 +289,49 @@ sub object_ok
 		{
 			my @classes = ref($tests{isa}) eq q(ARRAY) ? @{$tests{isa}} : $tests{isa};
 			isa_ok($object, $_, $name) for @classes;
+			delete $tests{isa};
 		}
 		
 		if (exists($tests{does}))
 		{
 			my @roles = ref($tests{does}) eq q(ARRAY) ? @{$tests{does}} : $tests{does};
 			does_ok($object, $_, $name) for @roles;
+			delete $tests{does};
 		}
 		
 		if (exists($tests{can}))
 		{
 			my @methods = ref($tests{can}) eq q(ARRAY) ? @{$tests{can}} : $tests{can};
 			can_ok($object, @methods);
+			delete $tests{can};
 		}
 		
 		if (exists($tests{api}))
 		{
 			my @methods = ref($tests{api}) eq q(ARRAY) ? @{$tests{api}} : $tests{api};
 			class_api_ok(ref($object), @methods);
+			delete $tests{api};
+		}
+		
+		if (exists($tests{more}))
+		{
+			my $more = delete $tests{more};
+			subtest("more tests for $name", sub
+			{
+				my $exception = exception { $object->$more };
+				is($exception, undef, "no exception thrown by additional tests");
+				done_testing;
+			});
 		}
 		
 		done_testing;
 	});
+	
+	if (keys %tests)
+	{
+		my $huh = join q[, ], sort keys %tests;
+		BAIL_OUT("object_ok cannot understand: $huh");
+	}
 }
 
 sub _generate_TD
@@ -758,14 +779,40 @@ Runs a gamut of subtests on an object:
       does  => \@roles,
       can   => \@methods,
       api   => \@methods,
+      more  => sub {
+         my $object = shift;
+         ...;
+      }
    );
 
 C<< $object >> may be a blessed object, or an unblessed coderef which
 returns a blessed object. The C<< isa >> test runs C<< isa_ok >>; the
 C<< does >> test runs C<< does_ok >>, the C<< can >> test runs
-C<< can_ok >>, and the C<< api >> test runs C<< class_api_ok >>. Any of
-the test hash keys may be omitted, in which case that test will not be
-run. C<< $name >> may be omitted.
+C<< can_ok >>, and the C<< api >> test runs C<< class_api_ok >>.
+
+C<< more >> introduces a coderef for running more tests. Within this
+sub you can use any of the standard Test::More, Test::LongString, etc
+tests. It is automatically run in a C<< try >> block (see L<Try::Tiny>);
+throwing an exception will cause the test to fail, but not cause the
+script to end.
+
+Any of the test hash keys may be omitted, in which case that test will
+not be run. C<< $name >> may be omitted.
+
+Practical example:
+
+   object_ok(
+      sub { Employee->new(name => 'Robert Jones') },
+      '$bob',
+      isa   => [qw( Employee Person Moo::Object )],
+      does  => [qw( Employable )],
+      can   => [qw( name employee_number tax_code )],
+      more  => sub {
+         my $object = shift;
+         is($object->name, "Robert Jones");
+         like($object->employee_number, qr/^[0-9]+$/);
+      },
+   );
 
 =back
 

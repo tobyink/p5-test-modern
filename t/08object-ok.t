@@ -44,6 +44,11 @@ object_ok(
 	does  => [qw/ XXX YYY /],
 	can   => [qw/ xxx /],
 	api   => [qw/ xxx yyy /],
+	more  => sub {
+		my $object = shift;
+		is($object->xxx, 1);
+		is($object->yyy, 2);
+	},
 );
 
 done_testing;
