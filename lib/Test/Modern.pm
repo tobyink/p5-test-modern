@@ -11,12 +11,25 @@ use Exporter::Tiny   0.030 qw();
 use Import::Into     1.002 qw();
 use Module::Runtime  0.012 qw( require_module );
 use Test::More       0.96;
-use Test::API        0.003;
 use Test::Fatal      0.007;
 use Test::Warnings   0.009 qw( warning warnings );
 use Test::LongString 0.15;
 use Test::Deep       0.111 qw( :v1 );
 use Try::Tiny        0.15  qw( try catch );
+
+BEGIN {
+	if ( $] < 5.010000 )
+	{
+		*public_ok  = \&can_ok;
+		*export_ok  = \&can_ok;
+	}
+	else
+	{
+		require Test::API;
+		'Test::API'->VERSION(0.003);
+		'Test::API'->import;
+	}
+};
 
 my %HINTS;
 
@@ -151,6 +164,8 @@ sub _exporter_validate_opts
 
 sub class_api_ok ($;@)
 {
+	goto \&can_ok if $] < 5.010000;
+	
 	my ($package, @expected) = @_;
 	my $tb    = Test::API::_builder();
 	my $label = "public API for class $package";
@@ -558,6 +573,10 @@ parent classes. Extra methods in parent classes will not cause the
 test to fail.
 
 =back
+
+B<< WARNING: >> Test::API is currently broken on Perl versions older
+than 5.10. Test::Modern makes these three functions act as aliases
+for C<can_ok> on older versions of Perl.
 
 =head2 Features from Test::LongString
 
