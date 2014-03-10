@@ -28,6 +28,7 @@ matrix:
         - "perl -Idevel.travis -MCPAN -e'install q(PEVANS/Scalar-List-Utils-1.35.tar.gz)'"
         - "perl -Idevel.travis -MCPAN -e'install q(MSCHWERN/ExtUtils-MakeMaker-6.56.tar.gz)'"
         - "perl -Idevel.travis -MCPAN -e'install q(FERREIRA/Exporter-5.63.tar.gz)'"
+        - "perl -Idevel.travis -MCPAN -e'install q(Module::Build)'"
         - "perl -Idevel.travis -MCPAN -e'install q(Test::More)'"
         - "perl -Idevel.travis -MCPAN -e'install q(Exporter::Tiny)'"
         - "perl -Idevel.travis -MCPAN -e'install q(Import::Into)'"
