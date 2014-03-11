@@ -44,6 +44,7 @@ my $return = object_ok(
 	does  => [qw/ XXX YYY /],
 	can   => [qw/ xxx /],
 	api   => [qw/ xxx yyy /],
+	clean => 1,
 	more  => sub {
 		my $object = shift;
 		is($object->xxx, 1);
