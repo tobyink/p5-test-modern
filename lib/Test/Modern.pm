@@ -863,7 +863,7 @@ This will skip the entire test script if the requirements are not met.
 For example:
 
    use Test::Modern -requires => {
-		'perl'                 => '5.010',
+      'perl'                 => '5.010',
       'Moose'                => '2.11',
       'namespace::autoclean' => undef,
    };
@@ -915,7 +915,7 @@ Runs a gamut of subtests on an object:
       does  => \@roles,
       can   => \@methods,
       api   => \@methods,
-		clean => $boolean,
+      clean => $boolean,
       more  => sub {
          my $object = shift;
          ...;
@@ -949,7 +949,7 @@ Practical example:
       isa   => [qw( Employee Person Moo::Object )],
       does  => [qw( Employable )],
       can   => [qw( name employee_number tax_code )],
-		clean => 1,
+      clean => 1,
       more  => sub {
          my $object = shift;
          is($object->name, "Robert Jones");
