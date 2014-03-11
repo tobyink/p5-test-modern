@@ -53,5 +53,7 @@
 	changeset [
 		item "-requires => { perl => $version }"^^Addition;
 		item "Use superclass.pm."^^Change;
+		item "namespaces_clean, inspired by Test::CleanNamespaces"^^Addition;
+		item "object_ok now has a `clean` test."^^Addition;
 	].
 
