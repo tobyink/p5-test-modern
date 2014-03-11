@@ -1,4 +1,4 @@
-use 5.006002;
+use 5.008001;
 use strict;
 use warnings;
 
@@ -7,7 +7,8 @@ package Test::Modern;
 our $AUTHORITY = 'cpan:TOBYINK';
 our $VERSION   = '0.000_07';
 
-use Exporter::Tiny   0.030 qw();
+use superclass 'Exporter::Tiny' => 0.030;
+
 use Import::Into     1.002 qw();
 use Module::Runtime  0.012 qw( require_module );
 use Test::More       0.96;
