@@ -56,7 +56,7 @@ my @defaults = qw/
 	exception
 	warnings warning
 	public_ok import_ok class_api_ok
-	does_ok object_ok
+	does_ok object_ok namespaces_clean
 	is_string is_string_nows like_string unlike_string
 	contains_string lacks_string
 	cmp_deeply TD
