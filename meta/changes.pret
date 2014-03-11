@@ -47,3 +47,11 @@
 		item "object_ok will now BAIL_OUT(!!) if you pass unknown hash keys in %tests."^^Change;
 	].
 
+`Test-Modern 0.000_08 cpan:TOBYINK`
+	issued  2014-03-11;
+	label   "Preview";
+	changeset [
+		item "-requires => { perl => $version }"^^Addition;
+		item "Use superclass.pm."^^Change;
+	].
+
