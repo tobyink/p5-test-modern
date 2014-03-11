@@ -57,3 +57,12 @@
 		item "object_ok now has a `clean` test."^^Addition;
 	].
 
+`Test-Modern 0.000_09 cpan:TOBYINK`
+	issued  2014-03-11;
+	label   "Preview";
+	changeset [
+		item "Minor formatting improvements."^^Documentation;
+		item "Add introductory paragraphs to several sections."^^Documentation;
+		item "Add SEE ALSO link to Test::CleanNamespaces."^^Documentation;
+	].
+
