@@ -515,93 +515,49 @@ Test::Modern exports the following subs from L<Test::More>:
 
 =over
 
-=item *
+=item C<< ok($truth, $description) >>
 
-C<< ok($truth, $description) >>
+=item C<< is($got, $expected, $description) >>
 
-=item *
+=item C<< isnt($got, $unexpected, $description) >>
 
-C<< is($got, $expected, $description) >>
+=item C<< like($got, $regexp, $description) >>
 
-=item *
+=item C<< unlike($got, $regexp, $description) >>
 
-C<< isnt($got, $unexpected, $description) >>
+=item C<< is_deeply($got, $expected, $description) >>
 
-=item *
+=item C<< cmp_ok($got, $operator, $expected, $description) >>
 
-C<< like($got, $regexp, $description) >>
+=item C<< new_ok($class, \@args, $name) >>
 
-=item *
+=item C<< isa_ok($object|$subclass, $class, $name) >>
 
-C<< unlike($got, $regexp, $description) >>
+=item C<< can_ok($object|$class, @methods) >>
 
-=item *
+=item C<< pass($description) >>
 
-C<< is_deeply($got, $expected, $description) >>
+=item C<< fail($description) >>
 
-=item *
+=item C<< subtest($description, sub { ... }) >>
 
-C<< cmp_ok($got, $operator, $expected, $description) >>
+=item C<< diag(@messages) >>
 
-=item *
+=item C<< note(@messages) >>
 
-C<< new_ok($class, \@args, $name) >>
+=item C<< explain(@messages) >>
 
-=item *
+=item C<< skip($why, $count) if $reason >>
 
-C<< isa_ok($object|$subclass, $class, $name) >>
+=item C<< todo_skip($why, $count) if $reason >>
 
-=item *
+=item C<< $TODO >>
 
-C<< can_ok($object|$class, @methods) >>
+=item C<< plan(%plan) >>
 
-=item *
+=item C<< done_testing >>
 
-C<< pass($description) >>
-
-=item *
-
-C<< fail($description) >>
-
-=item *
-
-C<< subtest($description, sub { ... }) >>
-
-=item *
-
-C<< diag(@messages) >>
-
-=item *
-
-C<< note(@messages) >>
-
-=item *
-
-C<< explain(@messages) >>
-
-=item *
-
-C<< skip($why, $count) if $reason >>
-
-=item *
-
-C<< todo_skip($why, $count) if $reason >>
-
-=item *
-
-C<< $TODO >>
-
-=item *
-
-C<< plan(%plan) >>
-
-=item *
-
-C<< done_testing >>
-
-=item *
-
-C<< BAIL_OUT($reason) >>
+=item C<< BAIL_OUT($reason) >>
 
 =back
 
@@ -617,9 +573,7 @@ Test::Modern exports the following subs from L<Test::Fatal>:
 
 =over
 
-=item *
-
-C<< exception { BLOCK } >>
+=item C<< exception { BLOCK } >>
 
 =back
 
@@ -629,13 +583,9 @@ Test::Modern exports the following subs from L<Test::Warnings>:
 
 =over
 
-=item *
+=item C<< warning { BLOCK } >>
 
-C<< warning { BLOCK } >>
-
-=item *
-
-C<< warnings { BLOCK } >>
+=item C<< warnings { BLOCK } >>
 
 =back
 
@@ -649,13 +599,9 @@ Test::Modern exports the following subs from L<Test::API>:
 
 =over
 
-=item *
+=item C<< public_ok($package, @functions) >>
 
-C<< public_ok($package, @functions) >>
-
-=item *
-
-C<< import_ok($package, @functions) >>
+=item C<< import_ok($package, @functions) >>
 
 =back
 
@@ -663,9 +609,7 @@ Test::Modern also provides another test modelled after C<public_ok>:
 
 =over
 
-=item *
-
-C<< class_api_ok($class, @methods) >>
+=item C<< class_api_ok($class, @methods) >>
 
 Like C<public_ok>, but allows missing functions to be inherited from
 parent classes. Extra methods in parent classes will not cause the
@@ -679,29 +623,17 @@ Test::Modern exports the following subs from L<Test::LongString>:
 
 =over
 
-=item *
+=item C<< is_string($got, $expected, $description) >>
 
-C<< is_string($got, $expected, $description) >>
+=item C<< is_string_nows($got, $expected, $description) >>
 
-=item *
+=item C<< like_string($got, $regexp, $description) >>
 
-C<< is_string_nows($got, $expected, $description) >>
+=item C<< unlike_string($got, $regexp, $description) >>
 
-=item *
+=item C<< contains_string($haystack, $needle, $description) >>
 
-C<< like_string($got, $regexp, $description) >>
-
-=item *
-
-C<< unlike_string($got, $regexp, $description) >>
-
-=item *
-
-C<< contains_string($haystack, $needle, $description) >>
-
-=item *
-
-C<< lacks_string($haystack, $needle, $description) >>
+=item C<< lacks_string($haystack, $needle, $description) >>
 
 =back
 
@@ -711,9 +643,7 @@ Test::Modern exports the following subs from L<Test::Deep>:
 
 =over
 
-=item *
-
-C<< cmp_deeply($got, $expected, $description) >>
+=item C<< cmp_deeply($got, $expected, $description) >>
 
 =back
 
@@ -721,97 +651,51 @@ The following are not exported by default, but can be exported upon request:
 
 =over
 
-=item *
+=item C<< ignore() >>
 
-C<< ignore() >>
+=item C<< methods(%hash) >>
 
-=item *
+=item C<< listmethods(%hash) >>
 
-C<< methods(%hash) >>
+=item C<< shallow($thing) >>
 
-=item *
+=item C<< noclass($thing) >>
 
-C<< listmethods(%hash) >>
+=item C<< useclass($thing) >>
 
-=item *
+=item C<< re($regexp, $capture_data, $flags) >>
 
-C<< shallow($thing) >>
+=item C<< superhashof(\%hash) >>
 
-=item *
+=item C<< subhashof(\%hash) >>
 
-C<< noclass($thing) >>
+=item C<< bag(@elements) >>
 
-=item *
+=item C<< set(@elements) >>
 
-C<< useclass($thing) >>
+=item C<< superbagof(@elements) >>
 
-=item *
+=item C<< subbagof(@elements) >>
 
-C<< re($regexp, $capture_data, $flags) >>
+=item C<< supersetof(@elements) >>
 
-=item *
+=item C<< subsetof(@elements) >>
 
-C<< superhashof(\%hash) >>
+=item C<< all(@expecteds) >>
 
-=item *
+=item C<< any(@expecteds) >>
 
-C<< subhashof(\%hash) >>
+=item C<< obj_isa($class) >>
 
-=item *
+=item C<< array_each($thing) >>
 
-C<< bag(@elements) >>
+=item C<< str($string) >>
 
-=item *
+=item C<< num($number, $tolerance) >>
 
-C<< set(@elements) >>
+=item C<< bool($value) >>
 
-=item *
-
-C<< superbagof(@elements) >>
-
-=item *
-
-C<< subbagof(@elements) >>
-
-=item *
-
-C<< supersetof(@elements) >>
-
-=item *
-
-C<< subsetof(@elements) >>
-
-=item *
-
-C<< all(@expecteds) >>
-
-=item *
-
-C<< any(@expecteds) >>
-
-=item *
-
-C<< obj_isa($class) >>
-
-=item *
-
-C<< array_each($thing) >>
-
-=item *
-
-C<< str($string) >>
-
-=item *
-
-C<< num($number, $tolerance) >>
-
-=item *
-
-C<< bool($value) >>
-
-=item *
-
-C<< code(\&subref) >>
+=item C<< code(\&subref) >>
 
 =back
 
@@ -823,11 +707,12 @@ C<TD> upon which you can call them as methods:
 
 =head2 Features inspired by Test::Moose
 
+Test::Modern does not use L<Test::Moose>, but does provide the
+following function inspired by it:
+
 =over
 
-=item *
-
-C<< does_ok($object|$subclass, $class, $name) >>
+=item C<< does_ok($object|$subclass, $class, $name) >>
 
 Like C<isa_ok>, but calls C<< $obj->DOES >> instead of C<< $obj->isa >>.
 
@@ -835,11 +720,12 @@ Like C<isa_ok>, but calls C<< $obj->DOES >> instead of C<< $obj->isa >>.
 
 =head2 Features inspired by Test::CleanNamespaces
 
+Test::Modern does not use L<Test::CleanNamespaces>, but does provide
+the following function inspired by it:
+
 =over
 
-=item *
-
-C<< namespaces_clean(@namespaces) >>
+=item C<< namespaces_clean(@namespaces) >>
 
 Tests that namespaces don't contain any imported functions. (i.e. you
 haven't forgotten to use L<namespace::autoclean> or L<namespace::sweep>
@@ -853,11 +739,12 @@ in a subtest, so the whole thing will only count as one test.
 
 =head2 Features inspired by Test::Requires
 
+Test::Modern does not use L<Test::Requires>, but does provide the
+following feature inspired by it:
+
 =over
 
-=item *
-
-C<< use Test::Modern -requires => \%requirements >>
+=item C<< use Test::Modern -requires => \%requirements >>
 
 This will skip the entire test script if the requirements are not met.
 For example:
@@ -880,31 +767,24 @@ various environment variables.
 
 =over
 
-=item *
+=item C<< use Test::Modern -author >>
 
-C<< use Test::Modern -author >>
+=item C<< use Test::Modern -release >>
 
-=item *
+=item C<< use Test::Modern -extended >>
 
-C<< use Test::Modern -release >>
-
-=item *
-
-C<< use Test::Modern -extended >>
-
-=item *
-
-C<< use Test::Modern -interactive >>
+=item C<< use Test::Modern -interactive >>
 
 =back
 
 =head2 Brand Spanking New Features
 
+Test::Modern provides a shortcut which combines several features it has
+pilfered from other testing modules:
+
 =over
 
-=item *
-
-C<< object_ok($object, $name, %tests) >>
+=item C<< object_ok($object, $name, %tests) >>
 
 Runs a gamut of subtests on an object:
 
@@ -1050,6 +930,7 @@ L<Test::API>,
 L<Test::LongString>,
 L<Test::Deep>,
 L<Test::Moose>,
+L<Test::CleanNamespaces>,
 L<Test::Requires>,
 L<Test::DescribeMe>.
 
