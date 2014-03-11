@@ -37,6 +37,7 @@ use Test::Modern -requires => {
 	use Scalar::Util qw(blessed);
 	use namespace::clean;
 	$INC{'Bar.pm'} = __FILE__;
+	sub xyz { 42 }
 }
 
 namespaces_clean('Foo', 'Bar');
