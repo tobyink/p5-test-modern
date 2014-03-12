@@ -923,6 +923,9 @@ L<http://rt.cpan.org/Dist/Display.html?Queue=Test-Modern>.
 
 =head1 SEE ALSO
 
+L<My Favourite Test::* Modules|http://blogs.perl.org/users/toby_inkster/2014/02/my-favourite-test-modules.html>,
+L<Precision Testing for Modern Perl|http://blogs.perl.org/users/toby_inkster/2014/03/precision-testing-for-modern-perl.html>.
+
 L<Test::More>,
 L<Test::Fatal>,
 L<Test::Warnings>,
@@ -936,8 +939,6 @@ L<Test::DescribeMe>.
 
 L<Test::Most> is a similar idea, but provides a slightly different
 combination of features.
-
-L<My Favourite Test::* Modules|http://blogs.perl.org/users/toby_inkster/2014/02/my-favourite-test-modules.html>.
 
 =head1 AUTHOR
 
