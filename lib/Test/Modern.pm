@@ -489,7 +489,7 @@ __END__
 
 =head1 NAME
 
-Test::Modern - commonly used test functions and features for modern Perl code
+Test::Modern - precision testing for modern perl
 
 =head1 SYNOPSIS
 

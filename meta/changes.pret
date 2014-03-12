@@ -71,5 +71,6 @@
 	label   "Initial release";
 	changeset [
 		item "Update SEE ALSO links."^^Documentation;
+		item "Change module abstract."^^Documentation;
 	].
 

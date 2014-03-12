@@ -4,7 +4,7 @@
 
 `Test-Modern`
 	:programming-language "Perl" ;
-	:shortdesc            "commonly used test functions and features for modern Perl code";
+	:shortdesc            "precision testing for modern perl";
 	:homepage             <https://metacpan.org/release/Test-Modern>;
 	:download-page        <https://metacpan.org/release/Test-Modern>;
 	:bug-database         <http://rt.cpan.org/Dist/Display.html?Queue=Test-Modern>;
