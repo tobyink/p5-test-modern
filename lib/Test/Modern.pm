@@ -5,7 +5,7 @@ use warnings;
 package Test::Modern;
 
 our $AUTHORITY = 'cpan:TOBYINK';
-our $VERSION   = '0.000_09';
+our $VERSION   = '0.001';
 
 use superclass 'Exporter::Tiny' => 0.030;
 

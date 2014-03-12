@@ -66,3 +66,10 @@
 		item "Add SEE ALSO link to Test::CleanNamespaces."^^Documentation;
 	].
 
+`Test-Modern 0.001 cpan:TOBYINK`
+	issued  2014-03-12;
+	label   "Initial release";
+	changeset [
+		item "Update SEE ALSO links."^^Documentation;
+	].
+
