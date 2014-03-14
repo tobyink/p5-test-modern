@@ -7,12 +7,11 @@ package Test::Modern;
 our $AUTHORITY = 'cpan:TOBYINK';
 our $VERSION   = '0.001';
 
-use superclass 'Exporter::Tiny' => 0.030;
-
+use Exporter::Tiny   0.030 qw();
 use Import::Into     1.002 qw();
 use Module::Runtime  0.012 qw( require_module module_notional_filename );
 use Test::More       0.96;
-use Test::API        0.003;
+use Test::API        0.004;
 use Test::Fatal      0.007;
 use Test::Warnings   0.009 qw( warning warnings );
 use Test::LongString 0.15;
@@ -161,35 +160,7 @@ sub _exporter_validate_opts
 # Additional exports
 #
 
-sub class_api_ok ($;@)
-{
-	my ($package, @expected) = @_;
-	my $tb    = Test::API::_builder();
-	my $label = "public API for class $package";
-
-	return 0 unless Test::API::_check_loaded( $package, $label );
-
-	my ($ok, $missing, $extra) = Test::API::_public_ok($package, @expected);
-	
-	# Call ->can to check if missing methods might be provided
-	# by parent classes...
-	if (!$ok)
-	{
-		@$missing = grep { not $package->can($_) } @$missing;
-		$ok       = not( scalar(@$missing) + scalar(@$extra) );
-	}
-	
-	$tb->ok($ok, $label);
-	if (!$ok)
-	{
-		$tb->diag("missing: @$missing") if @$missing;
-		$tb->diag("extra: @$extra")     if @$extra;
-	}
-	return $ok;
-}
-
-# Basically just a copy of Test::More::isa_ok
-sub does_ok ($$;$)
+sub does_ok ($$;$) # just a copy of Test::More::isa_ok
 {
 	my( $thing, $class, $thing_name ) = @_;
 	my $tb = Test::More->builder;
@@ -479,8 +450,6 @@ __END__
 
 =item C<does_ok>
 
-=item C<class_api_ok>
-
 =item C<object_ok>
 
 =item C<namespaces_clean>
@@ -603,17 +572,7 @@ Test::Modern exports the following subs from L<Test::API>:
 
 =item C<< import_ok($package, @functions) >>
 
-=back
-
-Test::Modern also provides another test modelled after C<public_ok>:
-
-=over
-
 =item C<< class_api_ok($class, @methods) >>
-
-Like C<public_ok>, but allows missing functions to be inherited from
-parent classes. Extra methods in parent classes will not cause the
-test to fail.
 
 =back
 

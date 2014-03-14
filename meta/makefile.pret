@@ -3,13 +3,12 @@
 @prefix : <http://ontologi.es/doap-deps#>.
 
 `Test-Modern`
-	:runtime-requirement    [ :on "superclass 0.003"^^:CpanId ];
 	:runtime-requirement    [ :on "Exporter::Tiny 0.030"^^:CpanId ];
 	:runtime-requirement    [ :on "Import::Into 1.002000"^^:CpanId ];
 	:runtime-requirement    [ :on "Module::Runtime 0.012"^^:CpanId ];
 	:runtime-requirement    [ :on "Test::More 0.96"^^:CpanId ];
 	:runtime-requirement    [ :on "Test::Fatal 0.007"^^:CpanId ];
-	:runtime-requirement    [ :on "Test::API 0.003"^^:CpanId ];
+	:runtime-requirement    [ :on "Test::API 0.004"^^:CpanId ];
 	:runtime-requirement    [ :on "Test::LongString 0.15"^^:CpanId ];
 	:runtime-requirement    [ :on "Test::Deep 0.111"^^:CpanId ];
 	:runtime-requirement    [ :on "Test::Warnings 0.009"^^:CpanId ];
