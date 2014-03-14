@@ -74,3 +74,10 @@
 		item "Change module abstract."^^Documentation;
 	].
 
+`Test-Modern 0.002 cpan:TOBYINK`
+	issued  2014-03-14;
+	changeset [
+		item "Use Test::API 0.004 which provides its own copy of class_api_ok(), so Test::Modern no longer has to provide it."^^Update;
+		item "No longer use superclass.pm."^^Change;
+	].
+
