@@ -81,3 +81,10 @@
 		item "No longer use superclass.pm."^^Change;
 	].
 
+`Test-Modern 0.003 cpan:TOBYINK`
+	issued  2014-03-24;
+	changeset [
+		item "Load IO::File and IO::Handle like Modern::Perl does."^^Change;
+		item "Provide a Test::Without::Module-like feature (-without)."^^Addition;
+	].
+
