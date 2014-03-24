@@ -927,9 +927,9 @@ C<< -deeper >>, and C<object_ok>.
 
 Classify the test script.
 
-=item C<< -requires >>
+=item C<< -requires >>, C<< -without >>
 
-Specify test requirements.
+Specify modules required or hidden for these test cases.
 
 =back
 
