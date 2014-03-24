@@ -7,7 +7,10 @@ package Test::Modern;
 our $AUTHORITY = 'cpan:TOBYINK';
 our $VERSION   = '0.002';
 
+use Carp             0     qw(croak);
 use Exporter::Tiny   0.030 qw();
+use IO::File         1.10  qw();
+use IO::Handle       1.23  qw();
 use Import::Into     1.002 qw();
 use Module::Runtime  0.012 qw( require_module module_notional_filename );
 use Test::More       0.96;
@@ -75,6 +78,40 @@ $HINTS{ requires } = sub
 	}
 	return;
 };
+
+{
+	my ($installed, %hide) = 0;
+	
+	my $inc = sub
+	{
+		my (undef, $file) = @_;
+		if ($hide{$file})
+		{
+			my @lines = ( "0;" );
+			return sub { defined($_ = shift @lines) };
+		}
+		return;
+	};
+	
+	$HINTS{ without } = sub
+	{
+		unless ($installed)
+		{
+			unshift(@INC, $inc);
+			++$installed;
+		}
+		
+		my @without = @{ $_[2] };
+		for my $module (@without)
+		{
+			my $file = module_notional_filename($module);
+			exists($INC{$file})
+				? croak("Cannot prevent $module from loading: it is already loaded")
+				: ++$hide{$file};
+		}
+		return;
+	};
+}
 
 our @ISA = qw(Exporter::Tiny);
 our %EXPORT_TAGS = (
@@ -154,7 +191,7 @@ sub _exporter_validate_opts
 	
 	return if ref $caller;
 	'strict'->import::into($caller);
-	'warnings'->import::into($caller);	
+	'warnings'->import::into($caller);
 }
 
 # Additional exports
@@ -476,7 +513,7 @@ as well as ideas from L<Test::Requires>, L<Test::DescribeMe>,
 L<Test::Moose>, and L<Test::CleanNamespaces>.
 
 Test::Modern also automatically imposes L<strict> and L<warnings> on your
-script.
+script, and loads L<IO::File>. (Much of the same stuff L<Modern::Perl> does.)
 
 =head2 Features from Test::More
 
@@ -716,6 +753,29 @@ For example:
 
 =back
 
+=head2 Features inspired by Test::Without::Module
+
+Test::Modern does not use L<Test::Without::Module>, but does provide
+the following feature inspired by it:
+
+=over
+
+=item C<< use Test::Modern -without => \@modules >>
+
+This will run the tests as if the module was not installed. Useful
+for testing things in the absence of optional dependencies. For
+example:
+
+   use Test::Modern -without => [ "Class::XSAccessor" ];
+
+It cannot suppress modules from being loaded if they are required by
+Test::Modern itself. To get a list of what modules Test::Modern
+requires, run the following command:
+
+   perl -MTest::Modern -le'print for sort keys %INC'
+
+=back
+
 =head2 Features inspired by Test::DescribeMe
 
 These export tags allow you to classify tests as "author tests",
@@ -894,6 +954,7 @@ L<Test::Deep>,
 L<Test::Moose>,
 L<Test::CleanNamespaces>,
 L<Test::Requires>,
+L<Test::Without::Module>,
 L<Test::DescribeMe>.
 
 L<Test::Most> is a similar idea, but provides a slightly different
