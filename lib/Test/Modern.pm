@@ -128,8 +128,8 @@ $HINTS{ requires } = sub
 		{
 			my $file = module_notional_filename($module);
 			exists($INC{$file})
-				? croak("Cannot prevent $module from loading: it is already loaded")
-				: ($hide{$file} = [$module]);
+				? plan(skip_all => sprintf("cannot prevent $module from loading (it is already loaded)"))
+				: ++$hide{$file};
 		}
 		return;
 	};
