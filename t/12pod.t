@@ -29,4 +29,4 @@ pod_coverage_ok("Test::Modern");
 
 all_pod_coverage_ok();
 
-done_testing(5);
+done_testing( 4 + !$ENV{PERL_TEST_MODERN_ALLOW_WARNINGS} );

@@ -15,7 +15,7 @@ use Module::Runtime  0.012 qw( require_module module_notional_filename );
 use Test::More       0.96;
 use Test::API        0.004;
 use Test::Fatal      0.007;
-use Test::Warnings   0.009 qw( warning warnings );
+use Test::Warnings   0.009 qw( warning warnings ), ($ENV{PERL_TEST_MODERN_ALLOW_WARNINGS} ? ':no_end_test' : ());
 use Test::LongString 0.15;
 use Test::Deep       0.111 qw( :v1 );
 use Try::Tiny        0.15  qw( try catch );
@@ -1135,6 +1135,33 @@ Specify modules required or hidden for these test cases.
 =back
 
 C<< $TODO >> is currently I<always> exported.
+
+=head1 ENVIRONMENT
+
+Test::Modern is affected by the following environment variables:
+
+=over
+
+=item C<AUTHOR_TESTING>, C<AUTOMATED_TESTING>, C<EXTENDED_TESTING>, C<RELEASE_TESTING>
+
+These variables affect the behaviour of Test::Modern's pod-checking and
+version-checking. See L</"Features from Test::Pod and Test::Coverage">
+and L</"Features from Test::Version">.
+
+They also can trigger certain import tags to skip a test script. See
+L</"Features inspired by Test::DescribeMe">.
+
+=item C<PERL_TEST_MODERN_ALLOW_WARNINGS>
+
+Setting this to true allows you to disable L<Test::Warnings>' end test.
+
+Normally the end test will cause a test script to fail if any unexpected
+warnings are encountered during its execution. New versions of Perl, and
+upgrades of dependencies can cause a previously good test suite to start
+emitting warnings. This environment variable can be used as a "quick fix"
+to get the test suite passing again.
+
+=back
 
 =head1 BUGS
 

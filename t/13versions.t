@@ -27,4 +27,4 @@ version_all_ok();
 
 version_all_same();
 
-done_testing(4);
+done_testing( 3 + !$ENV{PERL_TEST_MODERN_ALLOW_WARNINGS} );
