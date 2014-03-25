@@ -15,6 +15,7 @@ before_install:
   - "perlbrew install-cpanm -f"
   - "perl -V"
 install:
+  - cpanm Exporter
   - cpanm Exporter::Tiny Import::Into Module::Runtime Try::Tiny
   - cpanm Test::More Test::Fatal Test::LongString Test::Deep Test::Warnings
   - cpanm Test::API
