@@ -130,6 +130,7 @@ our %EXPORT_TAGS = (
 		pod_file_ok all_pod_files_ok
 		pod_coverage_ok all_pod_coverage_ok
 	)],
+	versions => [qw( version_ok version_all_ok version_all_same )],
 	strings  => [qw(
 		is_string is_string_nows like_string unlike_string
 		contains_string lacks_string
@@ -477,6 +478,7 @@ sub Test::Modern::_TD::AUTOLOAD
 	}
 }
 
+# Release tests...
 {
 	sub _should_extended_test ()
 	{
@@ -488,6 +490,10 @@ sub Test::Modern::_TD::AUTOLOAD
 		no strict qw(refs);
 		my ($module, $function, %opt) = @_;
 		
+		my $code;
+		($function, $code) = each(%$function)
+			if ref($function) eq q(HASH);
+			
 		*$function = sub
 		{
 			if ($opt{extended} and not _should_extended_test)
@@ -501,7 +507,7 @@ sub Test::Modern::_TD::AUTOLOAD
 			
 			if (eval "require $module")
 			{
-				my $code = \&{"$module\::$function"};
+				$code ||= \&{"$module\::$function"};
 				if ($opt{multi})
 				{
 					my @args = @_;
@@ -528,10 +534,48 @@ sub Test::Modern::_TD::AUTOLOAD
 		};
 	}
 	
+	my $_VAS = sub
+	{
+		my ($dir, $name) = @_;
+		$dir
+			= defined $dir ? $dir
+			: -d 'blib'    ? 'blib'
+			:                'lib';
+		return fail("$dir does not exist, or is not a directory")
+			unless -d $dir;
+		
+		my @files = File::Find::Rule->perl_module->in($dir);
+		$name ||= "all modules in $dir have the same version number";
+		
+		local $Test::Builder::Level = $Test::Builder::Level + 1;
+		
+		subtest $name => sub
+		{
+			my %versions;
+			for my $file (@files)
+			{
+				Test::Version::version_ok($file) or next;				
+				my $info = Module::Metadata->new_from_file($file);
+				push @{$versions{$info->version}}, $file;
+			}
+			my $ok = keys(%versions) < 2;
+			ok($ok, "single version number found");
+			if (!$ok)
+			{
+				diag("Files with version $_: @{$versions{$_}}")
+					for sort keys(%versions);
+			}
+			done_testing;
+		};
+	};
+	
 	_wrap("Test::Pod", "pod_file_ok", extended => 1);
 	_wrap("Test::Pod", "all_pod_files_ok", extended => 1, multi => 1);
 	_wrap("Test::Pod::Coverage", "pod_coverage_ok", extended => 1);
 	_wrap("Test::Pod::Coverage", "all_pod_coverage_ok", extended => 1, multi => 1);
+	_wrap("Test::Version", "version_ok", extended => 1);
+	_wrap("Test::Version", "version_all_ok", extended => 1, multi => 1);
+	_wrap("Test::Version", { "version_all_same" => $_VAS }, extended => 1);
 }
 
 1;
@@ -658,7 +702,7 @@ Test::Modern exports the following subs from L<Test::API>:
 
 =item C<< public_ok($package, @functions) >>
 
-=item C<< import_ok($package, @functions) >>
+=item C<< import_ok($package, export => \@functions, export_ok => \@functions) >>
 
 =item C<< class_api_ok($class, @methods) >>
 
@@ -754,6 +798,9 @@ C<TD> upon which you can call them as methods:
 
 =head2 Features from Test::Pod and Test::Pod::Coverage
 
+B<< These features are currently considered experimental. They
+may be removed from a future version of Test::Modern. >>
+
 Test::Modern can export the following subs from L<Test::Pod> and
 L<Test::Pod::Coverage>, though they are not exported by default:
 
@@ -786,6 +833,36 @@ software, unless they opt into it using C<EXTENDED_TESTING>.
 Also, Test::Modern wraps the C<< all_* >> functions to run them
 in a subtest (because otherwise they can interfere with your test
 plans).
+
+=head2 Features from Test::Version
+
+B<< These features are currently considered experimental. They
+may be removed from a future version of Test::Modern. >>
+
+Test::Modern can export the following subs from L<Test::Version>,
+though they are not exported by default:
+
+=over
+
+=item C<< version_ok($file, $description) >>
+
+=item C<< version_all_ok(@dirs) >>
+
+=back
+
+These are wrapped similarly to those described in the
+L</"Features from Test::Pod and Test::Coverage">.
+
+Test::Modern can also export another sub based on C<version_all_ok>:
+
+=over
+
+=item C<< version_all_same(@dirs) >>
+
+Acts like C<version_all_ok> but also checks that all modules have
+the same version number.
+
+=back
 
 =head2 Features inspired by Test::Moose
 
@@ -1003,15 +1080,19 @@ Exports the L</"Features inspired by Test::CleanNamespaces">.
 
 Exports the L</"Features from Test::Pod and Test::Pod::Coverage">.
 
+=item C<< -versions >>
+
+Exports the L</"Features from Test::Version">.
+
 =item C<< -default >>
 
 Exports the default features -- all of the above except C<< -deprecated >>,
-C<< -pod >>, and C<< -deeper >>. Also exports C<object_ok>.
+C<< -pod >>, C<< -versions >>, and C<< -deeper >>. Also exports C<object_ok>.
 
 =item C<< -all >>
 
 Exports all of the above features I<including> C<< -deprecated >>,
-C<< -pod >>, C<< -deeper >>, and C<object_ok>.
+C<< -pod >>, C<< -versions >>, C<< -deeper >>, and C<object_ok>.
 
 =item C<< -author >>, C<< -extended >>, C<< -interactive >>, and C<< -release >>
 
@@ -1047,7 +1128,8 @@ L<Test::Requires>,
 L<Test::Without::Module>,
 L<Test::DescribeMe>,
 L<Test::Pod>,
-L<Test::Pod::Coverage>.
+L<Test::Pod::Coverage>,
+L<Test::Version>.
 
 L<Test::Most> is a similar idea, but provides a slightly different
 combination of features.
