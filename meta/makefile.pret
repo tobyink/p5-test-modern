@@ -13,7 +13,7 @@
 	:runtime-requirement    [ :on "Test::Deep 0.111"^^:CpanId ];
 	:runtime-requirement    [ :on "Test::Warnings 0.009"^^:CpanId ];
 	:runtime-requirement    [ :on "Try::Tiny 0.15"^^:CpanId ];
-	:runtime-requirement    [ :on "perl 5.008001"^^:CpanId ];
+	:runtime-requirement    [ :on "perl 5.006001"^^:CpanId ];
 	:runtime-suggestion     [ :on "Test::Pod"^^:CpanId ];
 	:runtime-suggestion     [ :on "Test::Pod::Coverage"^^:CpanId ];
 	:runtime-suggestion     [ :on "Test::Version"^^:CpanId ];

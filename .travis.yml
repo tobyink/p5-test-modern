@@ -1,14 +1,14 @@
 language: perl
 perl:
   - "5.19"
-#  - "5.18.1_thr"
-#  - "5.18"
-#  - "5.16"
-#  - "5.14"
-#  - "5.12"
-#  - "5.10"
-#  - "5.8.9"
-#  - "5.8.3"
+  - "5.18.1_thr"
+  - "5.18"
+  - "5.16"
+  - "5.14"
+  - "5.12"
+  - "5.10"
+  - "5.8.9"
+  - "5.8.3"
   - "5.8.1"
 before_install:
   - "source devel.travis/travis-perlbrew"
@@ -23,30 +23,6 @@ install:
   - cpanm Test::API
 script:
   - "HARNESS_IS_VERBOSE=1 prove -Ilib t"
-matrix:
-  include:
-    - perl: "5.6.2"
-      install:
-        - "perl -Idevel.travis -MCPAN -e'install q(PEVANS/Scalar-List-Utils-1.35.tar.gz)'"
-        - "perl -Idevel.travis -MCPAN -e'install q(Text::Balanced)'"
-        - "perl -Idevel.travis -MCPAN -e'install q(MSCHWERN/ExtUtils-MakeMaker-6.56.tar.gz)'"
-        - "perl -Idevel.travis -MCPAN -e'install q(FERREIRA/Exporter-5.63.tar.gz)'"
-        - "perl -Idevel.travis -MCPAN -e'install q(Test::More)'"
-        - "perl -Idevel.travis -MCPAN -e'install q(Test::Harness)'"
-        - "perl -Idevel.travis -MCPAN -e'install q(BOBTFISH/Module-Metadata-1.000014.tar.gz)'"
-        - "perl -Idevel.travis -MCPAN -e'install q(DAGOLDEN/CPAN-Meta-YAML-0.008.tar.gz)'"
-        - "perl -Idevel.travis -MCPAN -e'install q(LEONT/Module-Build-0.4005.tar.gz)'"
-        - "perl -Idevel.travis -MCPAN -e'install q(Exporter::Tiny)'"
-        - "perl -Idevel.travis -MCPAN -e'install q(Import::Into)'"
-        - "perl -Idevel.travis -MCPAN -e'install q(Module::Runtime)'"
-        - "perl -Idevel.travis -MCPAN -e'install q(Try::Tiny)'"
-        - "perl -Idevel.travis -MCPAN -e'install q(Test::Fatal)'"
-        - "perl -Idevel.travis -MCPAN -e'install q(Test::LongString)'"
-        - "perl -Idevel.travis -MCPAN -e'install q(Test::Deep)'"
-        - "perl -Idevel.travis -MCPAN -e'install q(Test::Warnings)'"
-        - "perl -Idevel.travis -MCPAN -e'install q(Test::API)'"
-      script:
-        - "HARNESS_IS_VERBOSE=1 perl /home/travis/perl5/perlbrew/perls/5.6.2/bin/prove -r -Ilib t"
 #notifications:
 #  irc:
 #    channels:
