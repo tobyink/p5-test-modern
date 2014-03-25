@@ -88,3 +88,12 @@
 		item "Provide a Test::Without::Module-like feature (-without)."^^Addition;
 	].
 
+`Test-Modern 0.004 cpan:TOBYINK`
+	issued  2014-03-25;
+	changeset [
+		item "Improve the implementation of -without, including better compatibility with pre-5.12 versions of Perl."^^Change;
+		item "EXPERIMENTALLY provide Test::Pod functions."^^Addition;
+		item "EXPERIMENTALLY provide Test::Pod::Coverage functions."^^Addition;
+		item "EXPERIMENTALLY provide Test::Version functions."^^Addition;
+		item "Mention -without in the EXPORT section of the pod."^^Documentation;
+	].
