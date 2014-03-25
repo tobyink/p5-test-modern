@@ -8,8 +8,8 @@ our $AUTHORITY = 'cpan:TOBYINK';
 our $VERSION   = '0.004';
 
 use Exporter::Tiny   0.030 qw();
-use IO::File         1.10  qw();
-use IO::Handle       1.23  qw();
+use IO::File         1.08  qw();
+use IO::Handle       1.21  qw();
 use Import::Into     1.002 qw();
 use Module::Runtime  0.012 qw( require_module module_notional_filename );
 use Test::More       0.96;

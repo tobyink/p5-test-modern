@@ -22,7 +22,19 @@ install:
   - cpanm Test::More Test::Fatal Test::LongString Test::Deep Test::Warnings
   - cpanm Test::API
 script:
-  - "HARNESS_IS_VERBOSE=1 prove -Ilib t"
+  - prove -Ilib t
+matrix:
+  include:
+    - perl: "5.6.1"
+      install:
+        echo "Using pre-installed modules for Perl 5.6.1..."
+      script:
+        perl -Idevel.perl56/lib/perl5 devel.perl56/bin/prove -Idevel.perl56/lib/perl5 -Ilib t
+    - perl: "5.6.2"
+      install:
+        echo "Using pre-installed modules for Perl 5.6.2..."
+      script:
+        perl -Idevel.perl56/lib/perl5 devel.perl56/bin/prove -Idevel.perl56/lib/perl5 -Ilib t
 #notifications:
 #  irc:
 #    channels:

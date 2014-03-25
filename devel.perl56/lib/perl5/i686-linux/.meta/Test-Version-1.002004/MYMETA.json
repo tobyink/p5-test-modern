@@ -1,0 +1,93 @@
+{
+   "abstract" : "Check to see that version's in modules are sane",
+   "author" : [
+      "Caleb Cushing <xenoterracide@gmail.com>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Dist::Zilla version 5.006, CPAN::Meta::Converter version 2.132830, CPAN::Meta::Converter version 2.120921",
+   "license" : [
+      "artistic_2"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Test-Version",
+   "no_index" : {
+      "directory" : [
+         "corpus"
+      ],
+      "file" : [
+         "perlcritic.rc"
+      ]
+   },
+   "prereqs" : {
+      "build" : {
+         "requires" : {}
+      },
+      "configure" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "6.30"
+         }
+      },
+      "develop" : {
+         "requires" : {
+            "Pod::Coverage::TrustPod" : "0",
+            "Test::CPAN::Changes" : "0.19",
+            "Test::CPAN::Meta" : "0",
+            "Test::Pod" : "1.41",
+            "Test::Pod::Coverage" : "1.08",
+            "version" : "0.9901"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Carp" : "0",
+            "Exporter" : "0",
+            "File::Find::Rule::Perl" : "0",
+            "Module::Metadata" : "0",
+            "Test::Builder" : "0",
+            "Test::More" : "0.88",
+            "parent" : "0",
+            "strict" : "0",
+            "version" : "0.86",
+            "warnings" : "0"
+         }
+      },
+      "test" : {
+         "requires" : {
+            "File::Spec" : "0",
+            "IO::Handle" : "0",
+            "IPC::Open3" : "0",
+            "Test::Exception" : "0",
+            "Test::More" : "0.88",
+            "Test::Tester" : "0"
+         }
+      }
+   },
+   "provides" : {
+      "Test::Version" : {
+         "file" : "lib/Test/Version.pm",
+         "version" : "1.002004"
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/xenoterracide/test-version/issues"
+      },
+      "homepage" : "https://metacpan.org/dist/Test-Version",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/xenoterracide/test-version.git",
+         "web" : "https://github.com/xenoterracide/test-version"
+      }
+   },
+   "version" : "1.002004",
+   "x_contributors" : [
+      "Graham Ollis <perl@wdlabs.com>",
+      "Michael G. Schwern <schwern@pobox.com>",
+      "Mike Doherty <doherty@cs.dal.ca>",
+      "particle <particle@cpan.org>"
+   ]
+}

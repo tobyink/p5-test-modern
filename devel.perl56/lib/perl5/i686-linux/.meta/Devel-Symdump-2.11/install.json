@@ -1,0 +1,1 @@
+{"name":"Devel::Symdump","target":"Devel::Symdump","provides":{"Devel::Symdump::Export":{"file":"lib/Devel/Symdump/Export.pm"},"Devel::Symdump":{"file":"lib/Devel/Symdump.pm","version":"2.11"}},"pathname":"A/AN/ANDK/Devel-Symdump-2.11.tar.gz","dist":"Devel-Symdump-2.11","version":"2.11"}
