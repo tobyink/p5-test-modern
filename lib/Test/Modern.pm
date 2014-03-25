@@ -547,16 +547,6 @@ __END__
 
 =encoding utf-8
 
-=begin trustme
-
-=item C<does_ok>
-
-=item C<object_ok>
-
-=item C<namespaces_clean>
-
-=end trustme
-
 =head1 NAME
 
 Test::Modern - precision testing for modern perl
