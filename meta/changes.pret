@@ -97,3 +97,9 @@
 		item "EXPERIMENTALLY provide Test::Version functions."^^Addition;
 		item "Mention -without in the EXPORT section of the pod."^^Documentation;
 	].
+
+`Test-Modern 0.005 cpan:TOBYINK`
+	issued  2014-03-25;
+	changeset [
+		item "Support Perl 5.6.1+."^^Change;
+	].
