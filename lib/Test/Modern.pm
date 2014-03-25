@@ -478,16 +478,8 @@ sub Test::Modern::_TD::AUTOLOAD
 	my $has_test_pod;
 	sub _has_test_pod ()
 	{
-		unless (defined $has_test_pod)
-		{
-			try {
-				require Test::Pod;
-				$has_test_pod = 1;
-			}
-			catch {
-				$has_test_pod = 0;
-			}
-		}
+		$has_test_pod = !!eval { require Test::Pod }
+			unless defined $has_test_pod;
 		$has_test_pod;
 	}
 	
