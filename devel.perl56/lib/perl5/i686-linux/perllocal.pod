@@ -548,3 +548,25 @@ C<EXE_FILES: >
 
 =back
 
+=head2 Tue Mar 25 18:24:02 2014: C<Module> L<List::Util|List::Util>
+
+=over 4
+
+=item *
+
+C<installed into: /home/tai/perl5/hg/p5-test-modern/devel.perl56/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 1.23>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+

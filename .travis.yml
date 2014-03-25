@@ -29,15 +29,12 @@ matrix:
   include:
     - perl: "5.6.1"
       install:
-        - perl -Idevel.travis -MCPAN -e'install q(MSCHWERN/Test-Simple-0.98.tar.gz)'
-        - perl -Idevel.travis -MCPAN -e'install q(PEVANS/Scalar-List-Utils-1.35.tar.gz)'
-        - echo "Everything else should be in devel.perl56/lib/perl5..."
+        - echo "Everything should be in devel.perl56/lib/perl5..."
       script:
         - perl -Idevel.perl56/lib/perl5 devel.perl56/bin/prove -Idevel.perl56/lib/perl5 -Ilib t
     - perl: "5.6.2"
       install:
-        - perl -Idevel.travis -MCPAN -e'install q(PEVANS/Scalar-List-Utils-1.35.tar.gz)'
-        - echo "Everything else should be in devel.perl56/lib/perl5..."
+        - echo "Everything should be in devel.perl56/lib/perl5..."
       script:
         - perl -Idevel.perl56/lib/perl5 devel.perl56/bin/prove -Idevel.perl56/lib/perl5 -Ilib t
 #notifications:
