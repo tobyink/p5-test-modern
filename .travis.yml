@@ -17,8 +17,7 @@ before_install:
 install:
   - cpanm Exporter::Tiny Import::Into Module::Runtime Try::Tiny
   - cpanm Test::More Test::Fatal Test::LongString Test::Deep Test::Warnings
-  # Test::API test suite craps out on Perl 5.8.x
-  - cpanm -n Test::API
+  - cpanm Test::API
 script:
   - "HARNESS_IS_VERBOSE=1 prove -Ilib t"
 #notifications:
