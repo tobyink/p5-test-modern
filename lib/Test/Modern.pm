@@ -959,6 +959,10 @@ requires, run the following command:
 
    perl -MTest::Modern -le'print for sort keys %INC'
 
+(Note that the actual implementation is mostly stolen from
+L<Devel::Hide> which seems to behave better than
+L<Test::Without::Module>.)
+
 =back
 
 =head2 Features inspired by Test::DescribeMe
