@@ -1,4 +1,4 @@
-use 5.008001;
+use 5.006001;
 use strict;
 use warnings;
 
@@ -7,7 +7,6 @@ package Test::Modern;
 our $AUTHORITY = 'cpan:TOBYINK';
 our $VERSION   = '0.004';
 
-use Carp             0     qw(croak);
 use Exporter::Tiny   0.030 qw();
 use IO::File         1.10  qw();
 use IO::Handle       1.23  qw();
