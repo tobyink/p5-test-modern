@@ -11,9 +11,9 @@ perl:
 #  - "5.8.3"
 #  - "5.8.1"
 before_install:
-  - "source devel.travis/travis-perlbrew"
-  - "perlbrew install-cpanm -f"
-  - "perl -V"
+  - source devel.travis/travis-perlbrew
+  - perlbrew install-cpanm -f
+  - perl -V
 install:
   # Ensure new enough Exporter for Try::Tiny (which in turn requires new Carp)
   - cpanm -n Carp
@@ -27,16 +27,12 @@ script:
   - prove -Ilib t
 matrix:
   include:
-    - perl: "5.6.1"
-      install:
-        - echo "Everything should be in devel.perl56/lib/perl5..."
-      script:
-        - perl -Idevel.perl56/lib/perl5 devel.perl56/bin/prove -Idevel.perl56/lib/perl5 -Ilib t
-    - perl: "5.6.2"
-      install:
-        - echo "Everything should be in devel.perl56/lib/perl5..."
-      script:
-        - perl -Idevel.perl56/lib/perl5 devel.perl56/bin/prove -Idevel.perl56/lib/perl5 -Ilib t
+    - perl:    "5.6.1"
+      install: echo "Everything should be in devel.perl56/lib/perl5..."
+      script:  perl -Idevel.perl56/lib/perl5 -Idevel.perl56/lib/perl5/i686-linux devel.perl56/bin/prove -Idevel.perl56/lib/perl5 -Idevel.perl56/lib/perl5/i686-linux -Ilib t
+    - perl:    "5.6.2"
+      install: echo "Everything should be in devel.perl56/lib/perl5..."
+      script:  perl -Idevel.perl56/lib/perl5 -Idevel.perl56/lib/perl5/i686-linux devel.perl56/bin/prove -Idevel.perl56/lib/perl5 -Idevel.perl56/lib/perl5/i686-linux -Ilib t
 #notifications:
 #  irc:
 #    channels:
