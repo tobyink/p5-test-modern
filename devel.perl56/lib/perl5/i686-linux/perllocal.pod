@@ -526,3 +526,25 @@ C<EXE_FILES: bin/prove>
 
 =back
 
+=head2 Tue Mar 25 15:28:43 2014: C<Module> L<parent|parent>
+
+=over 4
+
+=item *
+
+C<installed into: /home/tai/perl5/hg/p5-test-modern/devel.perl56/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 0.228>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+

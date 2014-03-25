@@ -631,6 +631,11 @@ L<Test::Moose>, and L<Test::CleanNamespaces>.
 Test::Modern also automatically imposes L<strict> and L<warnings> on your
 script, and loads L<IO::File>. (Much of the same stuff L<Modern::Perl> does.)
 
+Although Test::Modern is a modern testing framework, it should run fine
+on pre-modern versions of Perl. It should be easy to install on Perl
+5.8.9 and above; and if you can persuade its dependencies to install
+(not necessarily easy!), should be OK on anything back to Perl 5.6.1.
+
 =head2 Features from Test::More
 
 Test::Modern exports the following subs from L<Test::More>:
