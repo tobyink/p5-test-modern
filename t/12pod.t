@@ -23,6 +23,10 @@ use Test::Modern qw( -more -pod );
 
 pod_file_ok(__FILE__);
 
-all_pod_files_ok('meta');
+all_pod_files_ok();
 
-done_testing(3);
+pod_coverage_ok("Test::Modern");
+
+all_pod_coverage_ok();
+
+done_testing(5);

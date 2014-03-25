@@ -38,7 +38,7 @@ $HINTS{ author } = sub
 $HINTS{ release } = sub
 {
 	return if $ENV{RELEASE_TESTING};
-	plan skip_all => 'Not running author tests';
+	plan skip_all => 'Not running release tests';
 };
 
 $HINTS{ interactive } = sub
@@ -126,7 +126,10 @@ our %EXPORT_TAGS = (
 	warnings => [qw( warnings warning )],
 	api      => [qw( public_ok import_ok class_api_ok )],
 	moose    => [qw( does_ok )],
-	pod      => [qw( pod_file_ok all_pod_files_ok )],
+	pod      => [qw(
+		pod_file_ok all_pod_files_ok
+		pod_coverage_ok all_pod_coverage_ok
+	)],
 	strings  => [qw(
 		is_string is_string_nows like_string unlike_string
 		contains_string lacks_string
@@ -475,58 +478,60 @@ sub Test::Modern::_TD::AUTOLOAD
 }
 
 {
-	my $has_test_pod;
-	sub _has_test_pod ()
+	sub _should_extended_test ()
 	{
-		$has_test_pod = !!eval { require Test::Pod }
-			unless defined $has_test_pod;
-		$has_test_pod;
+		$ENV{RELEASE_TESTING} || $ENV{AUTHOR_TESTING} || $ENV{EXTENDED_TESTING};
 	}
 	
-	sub _check_should_test_pod ()
+	sub _wrap
 	{
-		my $should = $ENV{RELEASE_TESTING} || $ENV{AUTHOR_TESTING} || $ENV{EXTENDED_TESTING};
+		no strict qw(refs);
+		my ($module, $function, %opt) = @_;
 		
-		return !!1 if $should;
-		SKIP: {
-			skip 'Not running extended tests', 1;
-			pass("skipped");
-		}
-		return !!0;
+		*$function = sub
+		{
+			if ($opt{extended} and not _should_extended_test)
+			{
+				SKIP: {
+					skip 'Not running extended tests', 1;
+					pass("skipped");
+				}
+				return 1;
+			}
+			
+			if (eval "require $module")
+			{
+				my $code = \&{"$module\::$function"};
+				if ($opt{multi})
+				{
+					my @args = @_;
+					@_ = ($function, sub {
+						@_ = @args;
+						goto $code;
+					});
+					goto \&Test::More::subtest;
+				}
+				else
+				{
+					goto $code;
+				}
+			}
+			
+			local $Test::Builder::Level = $Test::Builder::Level + 1;
+			SKIP: {
+				skip "$module only required for release testing", 1
+					unless $ENV{RELEASE_TESTING};
+				fail("$function");
+				diag("$module not installed");
+			}
+			return;
+		};
 	}
 	
-	sub pod_file_ok 
-	{
-		return unless _check_should_test_pod;
-		
-		goto \&Test::Pod::pod_file_ok if _has_test_pod;
-		
-		local $Test::Builder::Level = $Test::Builder::Level + 1;
-		SKIP: {
-			skip "Test::Pod not installed, but not required unless RELEASE_TESTING", 1
-				unless $ENV{RELEASE_TESTING};
-			return fail("POD test for $_[0] - Test::Pod missing");
-		}
-	}
-	
-	sub all_pod_files_ok
-	{
-		local $Test::Builder::Level = $Test::Builder::Level + 1;
-		
-		return unless _check_should_test_pod;
-		
-		my @args = @_;
-		return subtest "All POD files OK" => sub {
-			@_ = @args;
-			goto \&Test::Pod::all_pod_files_ok;
-		} if _has_test_pod;
-		
-		SKIP: {
-			skip "Test::Pod not installed, but not required unless RELEASE_TESTING", 1
-				unless $ENV{RELEASE_TESTING};
-			return fail("All POD files OK - Test::Pod missing");
-		}
-	}
+	_wrap("Test::Pod", "pod_file_ok", extended => 1);
+	_wrap("Test::Pod", "all_pod_files_ok", extended => 1, multi => 1);
+	_wrap("Test::Pod::Coverage", "pod_coverage_ok", extended => 1);
+	_wrap("Test::Pod::Coverage", "all_pod_coverage_ok", extended => 1, multi => 1);
 }
 
 1;
@@ -747,32 +752,40 @@ C<TD> upon which you can call them as methods:
    # like Test::Deep::bag(@elements)
    TD->bag(@elements)
 
-=head2 Features from Test::Pod
+=head2 Features from Test::Pod and Test::Pod::Coverage
 
-Test::Modern can export the following subs from L<Test::Pod>, though
-they are not exported by default:
+Test::Modern can export the following subs from L<Test::Pod> and
+L<Test::Pod::Coverage>, though they are not exported by default:
 
 =over
 
-=item C<< pod_file_ok($file, $name) >>
+=item C<< pod_file_ok($file, $description) >>
 
 =item C<< all_pod_files_ok(@dirs) >>
+
+=item C<< pod_coverage_ok($module, $params, $description) >>
+
+=item C<< all_pod_coverage_ok($params, $description) >>
 
 =back
 
 In fact, Test::Modern wraps these tests in checks to see whether
-Test::Pod is installed, and the state of the C<RELEASE_TESTING>,
-C<AUTHOR_TESTING>, and C<EXTENDED_TESTING> environment variables.
-If none of those environment variables is set to true, then the
-test is skipped altogether. If Test::Pod is not installed, then
-the test is skipped, unless C<RELEASE_TESTING> is true, in which
-case I<< Test::Pod must be installed >>.
+Test::Pod(::Coverage) is installed, and the state of the
+C<RELEASE_TESTING>, C<AUTHOR_TESTING>, and C<EXTENDED_TESTING>
+environment variables. If none of those environment variables is set to
+true, then the test is skipped altogether. If Test::Pod(::Coverage) is
+not installed, then the test is skipped, unless C<RELEASE_TESTING> is
+true, in which case I<< Test::Pod(::Coverage) must be installed >>.
 
 This is usually a pretty sensible behaviour. You want authors to
 be made aware of pod errors if possible. You want to make sure
 they are tested before doing a release. End users probably don't
 want a pod formatting error to prevent them from installing the
 software, unless they opt into it using C<EXTENDED_TESTING>.
+
+Also, Test::Modern wraps the C<< all_* >> functions to run them
+in a subtest (because otherwise they can interfere with your test
+plans).
 
 =head2 Features inspired by Test::Moose
 
@@ -988,7 +1001,7 @@ Exports the L</"Features inspired by Test::CleanNamespaces">.
 
 =item C<< -pod >>
 
-Exports the L</"Features from Test::Pod">.
+Exports the L</"Features from Test::Pod and Test::Pod::Coverage">.
 
 =item C<< -default >>
 
@@ -1032,7 +1045,9 @@ L<Test::Moose>,
 L<Test::CleanNamespaces>,
 L<Test::Requires>,
 L<Test::Without::Module>,
-L<Test::DescribeMe>.
+L<Test::DescribeMe>,
+L<Test::Pod>,
+L<Test::Pod::Coverage>.
 
 L<Test::Most> is a similar idea, but provides a slightly different
 combination of features.
