@@ -15,12 +15,33 @@ before_install:
   - "perlbrew install-cpanm -f"
   - "perl -V"
 install:
+  # Ensure new enough Exporter for Try::Tiny
   - cpanm Exporter
   - cpanm Exporter::Tiny Import::Into Module::Runtime Try::Tiny
   - cpanm Test::More Test::Fatal Test::LongString Test::Deep Test::Warnings
   - cpanm Test::API
 script:
   - "HARNESS_IS_VERBOSE=1 prove -Ilib t"
+matrix:
+  include:
+    - perl: "5.6.2"
+      install:
+        - "perl -Idevel.travis -MCPAN -e'install q(PEVANS/Scalar-List-Utils-1.35.tar.gz)'"
+        - "perl -Idevel.travis -MCPAN -e'install q(Text::Balanced)'"
+        - "perl -Idevel.travis -MCPAN -e'install q(MSCHWERN/ExtUtils-MakeMaker-6.56.tar.gz)'"
+        - "perl -Idevel.travis -MCPAN -e'install q(FERREIRA/Exporter-5.63.tar.gz)'"
+        - "perl -Idevel.travis -MCPAN -e'install q(Exporter::Tiny)'"
+        - "perl -Idevel.travis -MCPAN -e'install q(Import::Into)'"
+        - "perl -Idevel.travis -MCPAN -e'install q(Module::Runtime)'"
+        - "perl -Idevel.travis -MCPAN -e'install q(Try::Tiny)'"
+        - "perl -Idevel.travis -MCPAN -e'install q(Test::More)'"
+        - "perl -Idevel.travis -MCPAN -e'install q(Test::Fatal)'"
+        - "perl -Idevel.travis -MCPAN -e'install q(Test::LongString)'"
+        - "perl -Idevel.travis -MCPAN -e'install q(Test::Deep)'"
+        - "perl -Idevel.travis -MCPAN -e'install q(Test::Warnings)'"
+        - "perl -Idevel.travis -MCPAN -e'install q(Test::API)'"
+      script:
+        - "HARNESS_IS_VERBOSE=1 perl /home/travis/perl5/perlbrew/perls/5.6.2/bin/prove -r -Ilib t"
 #notifications:
 #  irc:
 #    channels:
