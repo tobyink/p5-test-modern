@@ -82,13 +82,35 @@ $HINTS{ requires } = sub
 {
 	my ($installed, %hide) = 0;
 	
+	# This implementation stolen from Devel::Hide. Keep the
+	# Perl-5.6 compatible implementation, because one day it
+	# might be nice if this module could support Perl 5.6.
+	my $_scalar_as_io = ($] >= 5.008)
+		? sub {
+			open(my($io), '<', \$_[0])
+				or die("Cannot open scalarref for IO?!");
+			return $io;
+		}
+		: sub {
+			my $scalar = shift;
+			require File::Temp;
+			my $io = File::Temp::tempfile();
+			print {$io} $scalar;
+			seek $io, 0, 0; # rewind the handle
+			return $io;
+		};
+	
 	my $inc = sub
 	{
 		my (undef, $file) = @_;
 		if ($hide{$file})
 		{
-			my @lines = ( "0;" );
-			return sub { defined($_ = shift @lines) };
+			my $oops = sprintf(
+				qq{die "Can't locate %s (hidden by %s)\\n";},
+				$file,
+				__PACKAGE__,
+			);
+			return $_scalar_as_io->($oops);
 		}
 		return;
 	};
@@ -107,7 +129,7 @@ $HINTS{ requires } = sub
 			my $file = module_notional_filename($module);
 			exists($INC{$file})
 				? croak("Cannot prevent $module from loading: it is already loaded")
-				: ++$hide{$file};
+				: ($hide{$file} = [$module]);
 		}
 		return;
 	};

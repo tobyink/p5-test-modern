@@ -27,17 +27,17 @@ use Test::Modern -without => [qw(
 
 like(
 	exception { require CGI::Push },
-	qr/did not return a true value/,
+	qr/^Can't locate/,
 );
 
 like(
 	exception { require LWP::UserAgent },
-	qr/did not return a true value/,
+	qr/^Can't locate/,
 );
 
 like(
 	exception { require Net::NNTP },
-	qr/did not return a true value/,
+	qr/^Can't locate/,
 );
 
 done_testing;
