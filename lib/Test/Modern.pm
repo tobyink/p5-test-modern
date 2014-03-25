@@ -170,7 +170,7 @@ our %EXPORT_TAGS = (
 );
 
 our @EXPORT_OK = (
-	'object_ok',
+	'object_ok', 'shouldnt_warn',
 	map(@$_, grep { ref($_) eq 'ARRAY' } values(%EXPORT_TAGS)),
 );
 
@@ -599,6 +599,21 @@ sub Test::Modern::_TD::AUTOLOAD
 	_wrap("Test::Version", { "version_all_same" => $_VAS }, extended => 1);
 }
 
+sub shouldnt_warn (&)
+{
+	my @warnings = do {
+		local $Test::Builder::Level = $Test::Builder::Level + 3;
+		&Test::Warnings::warnings(@_);
+	};
+	
+	my $old = $TODO;
+	$TODO = "shouldn't warn block";
+	local $Test::Builder::Level = $Test::Builder::Level + 1;
+	ok(scalar(@warnings)==0, "no (unexpected) warnings");
+	diag("Saw warning: $_") for @warnings;
+	$TODO = $old;
+}
+
 1;
 
 ## no Test::Tabs
@@ -719,6 +734,20 @@ Test::Modern exports the following subs from L<Test::Warnings>:
 In addition, Test::Modern always enables the C<had_no_warnings> test at
 the end of the file, ensuring that your test script generated no warnings
 other than the expected ones which were caught by C<warnings> blocks.
+(See also C<PERL_TEST_MODERN_ALLOW_WARNINGS> in L</"ENVIRONMENT">.)
+
+Test::Modern can also export an additional function for testing warnings,
+but does not export it by default:
+
+=over
+
+=item C<< shouldnt_warn { BLOCK } >>
+
+Runs a block of code that will hopefully not warn, but might. Tests that
+it doesn't warn, but performs that test as a "todo" test, so if it fails,
+your test suite can still pass.
+
+=back
 
 =head2 Features from Test::API
 
@@ -1122,7 +1151,8 @@ C<< -pod >>, C<< -versions >>, and C<< -deeper >>. Also exports C<object_ok>.
 =item C<< -all >>
 
 Exports all of the above features I<including> C<< -deprecated >>,
-C<< -pod >>, C<< -versions >>, C<< -deeper >>, and C<object_ok>.
+C<< -pod >>, C<< -versions >>, C<< -deeper >>, C<object_ok>, and
+C<shouldnt_warn>.
 
 =item C<< -author >>, C<< -extended >>, C<< -interactive >>, and C<< -release >>
 
