@@ -9,14 +9,14 @@ perl:
 #  - "5.10"
 #  - "5.8.9"
 #  - "5.8.3"
-#  - "5.8.1"
+  - "5.8.1"
 before_install:
   - "source devel.travis/travis-perlbrew"
   - "perlbrew install-cpanm -f"
   - "perl -V"
 install:
   # Ensure new enough Exporter for Try::Tiny
-  - cpanm Exporter
+  - cpanm Carp Exporter
   - cpanm Exporter::Tiny Import::Into Module::Runtime Try::Tiny
   - cpanm Test::More Test::Fatal Test::LongString Test::Deep Test::Warnings
   - cpanm Test::API
