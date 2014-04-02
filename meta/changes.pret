@@ -108,4 +108,6 @@
 	issued  2014-04-02;
 	changeset [
 		item "EXPERIMENTALLY provide Test::Lib-like behaviour, and a related -lib export tag."^^Addition;
+		item "Support an environment variable PERL_TEST_MODERN_ALLOW_WARNINGS to allow end-users to skip running end warnings tests."^^Addition;
+		item "shouldnt_warn function."^^Addition;
 	].
