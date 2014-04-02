@@ -671,6 +671,8 @@ __END__
 
 =encoding utf-8
 
+=for stopwords todo
+
 =head1 NAME
 
 Test::Modern - precision testing for modern perl
