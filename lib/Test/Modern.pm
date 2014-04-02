@@ -7,7 +7,9 @@ package Test::Modern;
 our $AUTHORITY = 'cpan:TOBYINK';
 our $VERSION   = '0.005';
 
+use Cwd              0     qw();
 use Exporter::Tiny   0.030 qw();
+use File::Spec       0     qw();
 use IO::File         1.08  qw();
 use IO::Handle       1.21  qw();
 use Import::Into     1.002 qw();
@@ -77,6 +79,8 @@ $HINTS{ requires } = sub
 	}
 	return;
 };
+
+$HINTS{ lib } = sub { $_[3]{lib}++; () };
 
 {
 	my ($installed, %hide) = 0;
@@ -196,13 +200,16 @@ sub import
 	
 	push @_, @EXPORT if $symbols == 0;
 	
-	unshift @_, $me;
+	my $globals = ref($_[0]) eq 'HASH' ? shift() : {};
+	$globals->{into_file} = (caller)[1] unless ref($globals->{into});
+	
+	unshift @_, $me, $globals;
 	goto \&Exporter::Tiny::import;
 }
 
 sub _exporter_validate_opts
 {
-	shift;
+	my $me = shift;
 	my ($opts) = @_;
 	my $caller = $opts->{into};
 	
@@ -218,6 +225,46 @@ sub _exporter_validate_opts
 	return if ref $caller;
 	'strict'->import::into($caller);
 	'warnings'->import::into($caller);
+	$me->_setup_inc($opts);
+}
+
+sub _setup_inc
+{
+	shift;
+	my ($opts) = @_;
+	
+	return unless exists($opts->{into_file});
+	
+	my $dir = do {
+		my @tmp = 'File::Spec'->splitpath($opts->{into_file});
+		pop @tmp;
+		'File::Spec'->catpath(@tmp);
+	};
+	
+	my $found;
+	LEVEL: for my $i (0..5)
+	{
+		my $t_dir    = 'File::Spec'->catdir($dir, (('File::Spec'->updir) x $i), 't');
+		my $xt_dir   = 'File::Spec'->catdir($dir, (('File::Spec'->updir) x $i), 'xt');
+		
+		-d $t_dir or -d $xt_dir or next LEVEL;
+		
+		my $tlib_dir = 'File::Spec'->catdir($t_dir, 'lib');
+		
+		if (-d $tlib_dir)
+		{
+			require lib;
+			'lib'->import(Cwd::abs_path $tlib_dir);
+			$found++;
+		}
+		
+		last LEVEL if $found;
+	}
+	
+	if ($opts->{lib} and not $found)
+	{
+		BAIL_OUT("Expected to find directory t/lib!");
+	}
 }
 
 # Additional exports
@@ -1018,6 +1065,21 @@ various environment variables.
 
 =back
 
+=head2 Features inspired by Test::Lib
+
+B<< These features are currently considered experimental. They
+may be removed from a future version of Test::Modern. >>
+
+Test::Modern tries to find a directory called C<< t/lib >> by
+traversing up the directory tree from the caller file. If found,
+this directory will be added to C<< @INC >>.
+
+L<Test::Lib> would croak if such a directory cannot be found.
+L<Test::Modern> carries on if it can't find it. If you want something
+more like the Test::Lib behaviour, use the C<< -lib >> import tag:
+
+   use Test::Modern -lib;
+
 =head2 Brand Spanking New Features
 
 Test::Modern provides a shortcut which combines several features it has
@@ -1162,6 +1224,12 @@ Classify the test script.
 
 Specify modules required or hidden for these test cases.
 
+=item C<< -lib >>
+
+Makes the absence of a C<< t/lib >> directory fatal.
+
+See L</"Features inspired by Test::Lib">.
+
 =back
 
 C<< $TODO >> is currently I<always> exported.
@@ -1214,6 +1282,7 @@ L<Test::CleanNamespaces>,
 L<Test::Requires>,
 L<Test::Without::Module>,
 L<Test::DescribeMe>,
+L<Test::Lib>,
 L<Test::Pod>,
 L<Test::Pod::Coverage>,
 L<Test::Version>.
