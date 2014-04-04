@@ -236,7 +236,7 @@ sub _setup_inc
 	return unless exists($opts->{into_file});
 	
 	# Workaround for File::Spec on legacy Redhat??
-	local $SIG{__WARN__} = 'IGNORE';
+	local $SIG{__WARN__} = sub {};
 	
 	my $dir = do {
 		my @tmp = 'File::Spec'->splitpath($opts->{into_file});
