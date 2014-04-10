@@ -111,3 +111,14 @@
 		item "Support an environment variable PERL_TEST_MODERN_ALLOW_WARNINGS to allow end-users to skip running end warnings tests."^^Addition;
 		item "shouldnt_warn function."^^Addition;
 	].
+
+`Test-Modern 0.007 cpan:TOBYINK`
+	issued  2014-04-10;
+	changeset [
+		item [
+			a dcs:Bugfix;
+			label "Fix for warnings being generated deep in the bowels of File::Spec.";
+			dcs:thanks <urn:uuid:75b48b1f-55fe-4bfe-ae0f-0319863d27fd>, cpan:VOEGELAS;
+			dcs:fixes RT#94383;
+		];
+	].

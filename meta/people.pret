@@ -7,3 +7,11 @@ cpan:TOBYINK
 	:page  <https://metacpan.org/author/TOBYINK>;
 	:mbox  <mailto:tobyink@cpan.org>.
 
+<urn:uuid:75b48b1f-55fe-4bfe-ae0f-0319863d27fd>
+	:name  "Paul Howarth";
+	:mbox  <mailto:paul@city-fan.org>;
+	:page  <http://www.city-fan.org/>.
+
+cpan:VOEGELAS
+	:name  "Andreas Vögele";
+	:page  <http://www.andreasvoegele.com/>.
