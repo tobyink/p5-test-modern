@@ -122,3 +122,10 @@
 			dcs:fixes RT#94383;
 		];
 	].
+
+`Test-Modern 0.008 cpan:TOBYINK`
+	issued  2014-06-19;
+	changeset [
+		item "Package with a newer Dist::Inkt to provide a better Makefile.PL (copes better with missing CPAN::Meta::Requirements)."^^Packaging;
+	].
+
