@@ -138,6 +138,52 @@ $HINTS{ lib } = sub { $_[3]{lib}++; () };
 	};
 }
 
+{
+	my $checker;
+	$checker = sub {
+		$checker = eval q{
+			package #
+				Dummy::Test::RequiresInternet;
+			use Socket;
+			sub {
+				my ($host, $port) = @_;
+				my $portnum = ($port =~ /[^0-9]/) ? getservbyname($port, "tcp") : $port;
+				die "Could not find a port number for $port\n" if not $portnum;
+				my $iaddr = inet_aton($host) or die "no host: $host\n";
+				my $paddr = sockaddr_in($portnum, $iaddr);
+				my $proto = getprotobyname("tcp");
+				socket(my $sock, PF_INET, SOCK_STREAM, $proto) or die "socket: $!\n";
+				connect($sock, $paddr) or die "connect: $!\n";
+				close($sock) or die "close: $!\n";
+				!!1;
+			}
+		};
+		goto($checker);
+	};
+	
+	$HINTS{ internet } = sub
+	{
+		plan skip_all => 'Not running network tests'
+			if $ENV{NO_NETWORK_TESTING};
+		
+		my $arg = $_[2];
+		my @hosts =
+			ref($arg) eq q(HASH)   ? %$arg :
+			ref($arg) eq q(ARRAY)  ? @$arg :
+			ref($arg) eq q(SCALAR) ? ( $$arg => 80 ) :
+			( 'www.google.com' => 80 );
+		
+		while (@hosts) {
+			my ($host, $port) = splice(@hosts, 0, 2);
+			defined($host) && defined($port)
+				or BAIL_OUT("Expected host+port pair (not undef)");
+			eval { $checker->($host, $port); 1 } or plan skip_all => "$@";
+		}
+		
+		return;
+	};
+}
+
 our @ISA = qw(Exporter::Tiny);
 our %EXPORT_TAGS = (
 	more     => [qw(
@@ -1019,6 +1065,23 @@ For example:
 
 =back
 
+=head2 Features inspired by Test::RequiresInternet
+
+Similarly you can skip the test script if an Internet connection is not
+available:
+
+   use Test::Modern -internet;
+
+You can check for the ability to connect to particular hosts and ports:
+
+   use Test::Modern -internet => [
+      'www.example.com'  => 'http',
+      '8.8.8.8'          => 53,
+   ];
+
+Test::Modern does not use L<Test::RequiresInternet> but I've stolen much
+of the latter's implementation.
+
 =head2 Features inspired by Test::Without::Module
 
 Test::Modern does not use L<Test::Without::Module>, but does provide
@@ -1221,6 +1284,10 @@ C<shouldnt_warn>.
 
 Classify the test script.
 
+=item C<< -internet >>
+
+The test script requires Internet access.
+
 =item C<< -requires >>, C<< -without >>
 
 Specify modules required or hidden for these test cases.
@@ -1249,6 +1316,12 @@ and L</"Features from Test::Version">.
 
 They also can trigger certain import tags to skip a test script. See
 L</"Features inspired by Test::DescribeMe">.
+
+=item C<NO_NETWORK_TESTS>
+
+Automatically skips any tests which indicate that they require Internet
+access, without even checking to see if the Internet is accessible.
+See L</"Features inspired by Test::RequiresInternet">.
 
 =item C<PERL_TEST_MODERN_ALLOW_WARNINGS>
 
@@ -1282,6 +1355,7 @@ L<Test::Moose>,
 L<Test::CleanNamespaces>,
 L<Test::Requires>,
 L<Test::Without::Module>,
+L<Test::RequiresInternet>,
 L<Test::DescribeMe>,
 L<Test::Lib>,
 L<Test::Pod>,
