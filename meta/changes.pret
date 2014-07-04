@@ -129,3 +129,11 @@
 		item "Package with a newer Dist::Inkt to provide a better Makefile.PL (copes better with missing CPAN::Meta::Requirements)."^^Packaging;
 	].
 
+`Test-Modern 0.009 cpan:TOBYINK`
+	issued  2014-07-04;
+	changeset [
+		item "Implement an `-internet` feature allowing test scripts to declare they need access to the Internet. This honours the NO_NETWORK_TESTS environment variable."^^Addition;
+		item "Improved `namespaces_clean` implementation along the same lines as recent changes to Test::CleanNamespaces."^^Update;
+		item "Precautionary bypassing of prototype for internal calls to `Test::More::subtest`."^^Change;
+	].
+
