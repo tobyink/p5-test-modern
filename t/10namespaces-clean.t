@@ -25,6 +25,11 @@ use Test::Modern -requires => {
 };
 
 {
+	package MyRole;
+	sub xyz { 999 }
+}
+
+{
 	package Foo;
 	use Scalar::Util qw(refaddr);
 	use namespace::clean;
@@ -36,10 +41,24 @@ use Test::Modern -requires => {
 	use Moose;
 	use Scalar::Util qw(blessed);
 	use namespace::clean;
+	use constant CONST => 42;
+	use overload q[0+] => 'xyz';
 	$INC{'Bar.pm'} = __FILE__;
 	sub xyz { 42 }
 }
 
-namespaces_clean('Foo', 'Bar');
+{
+	package Baz;
+	BEGIN { *xyz = \&MyRole::xyz };
+	sub DOES {
+		my $self = shift;
+		return !!1 if $_[0] eq 'MyRole';
+		return !!1 if $self->isa(@_);
+		return !!0;
+	}
+	$INC{'Baz.pm'} = __FILE__;
+}
+
+namespaces_clean('Foo', 'Bar', 'Baz');
 
 done_testing;

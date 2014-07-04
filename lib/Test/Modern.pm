@@ -505,40 +505,77 @@ sub Test::Modern::_TD::AUTOLOAD
 	{
 		my $ns = shift;
 		require_module($ns);
-
+		
 		my %symbols = do {
 			no strict qw(refs);
-			map   { /(\w+)$/ => $_; }
-			grep  { *$_{CODE}; }
+			map   { /([^:]+)$/; $1 => $_; }
+			grep  { eval { *$_{CODE} } }
 			values %{"$ns\::"};
 		};
 		
+		my @imports;
 		my $meta;
 		if ($INC{ module_notional_filename('Moose::Util') }
 			and $meta = Moose::Util::find_meta($ns))
 		{
 			my %subs = %symbols;
 			delete @subs{ $meta->get_method_list };
-			return keys %subs;
+			@imports = keys %subs;
 		}
 		elsif ($INC{ module_notional_filename('Mouse::Util') }
 			and $meta = Mouse::Util::class_of($ns))
 		{
 			my %subs = %symbols;
 			delete @subs{ $meta->get_method_list };
-			return keys %subs;
+			@imports = keys %subs;
 		}
 		else
 		{
 			require B;
 			no strict qw(refs);
-			return grep {
+			@imports = grep {
 				my $stash = B::svref_2object(\&{"$ns\::$_"})->GV->STASH->NAME;
 				$stash ne $ns
 					and $stash ne 'Role::Tiny'
 					and not eval { require Role::Tiny; Role::Tiny->is_role($stash) }
 			} keys %symbols;
 		}
+		
+		my %imports; @imports{@imports} = map substr("$symbols{$_}", 1), @imports;
+		
+		# But really it's better to inherit these rather than import them. :-)
+		if (keys %imports) {
+			delete @imports{qw(import unimport)};
+		}
+		
+		if (keys %imports) {
+			my @overloads = grep {
+				/^\(/ or $imports{$_} eq 'overload::nil'
+			} keys %imports;
+			delete @imports{@overloads} if @overloads;
+		}
+		
+		if (keys %imports and $] < 5.010) {
+			my @constants = grep { $imports{$_} eq 'constant::__ANON__' } keys %imports;
+			delete @imports{@constants} if @constants;
+		}
+		
+		@imports = sort keys(%imports);
+		my %sources;
+		@sources{@imports} = map {
+			B::svref_2object(\&{"$ns\::$_"})->GV->STASH->NAME;
+		} @imports;
+		
+		my %does;
+		for my $func (keys %sources) {
+			my $role = $sources{$func};
+			$does{$role} = !!eval { $ns->DOES($role) }
+				unless exists $does{$role};
+			delete $imports{$func}
+				if $does{$role};
+		}
+		
+		sort keys(%imports);
 	};
 	
 	my $_diag_dirt = sub
@@ -554,7 +591,7 @@ sub Test::Modern::_TD::AUTOLOAD
 		} @imports;
 		diag explain('remaining imports: ' => \%imports);
 	};
-
+	
 	my $_test_or_skip = sub
 	{
 		my $ns = shift;
@@ -572,7 +609,7 @@ sub Test::Modern::_TD::AUTOLOAD
 		};
 		return $rv;
 	};
-		
+	
 	sub namespaces_clean
 	{
 		local $Test::Builder::Level = $Test::Builder::Level + 1;
