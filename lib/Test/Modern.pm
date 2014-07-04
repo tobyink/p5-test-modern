@@ -403,7 +403,7 @@ sub object_ok
 	my $name   = (@_%2) ? shift : '$object';
 	my %tests  = @_;
 	
-	my $result = subtest("$name ok", sub
+	my $result = &subtest("$name ok", sub
 	{
 		if (ref($object) eq q(CODE))
 		{
@@ -459,7 +459,7 @@ sub object_ok
 		if (exists($tests{more}))
 		{
 			my $more = delete $tests{more};
-			subtest("more tests for $name", sub
+			&subtest("more tests for $name", sub
 			{
 				my $exception = exception { $object->$more };
 				is($exception, undef, "no exception thrown by additional tests");
@@ -618,7 +618,7 @@ sub Test::Modern::_TD::AUTOLOAD
 		return shift->$_test_or_skip if @_ == 1;
 		
 		my @namespaces = @_;
-		return subtest(
+		return &subtest(
 			sprintf("namespaces_clean: %s", join q(, ), @namespaces),
 			sub {
 				$_->$_test_or_skip for @namespaces;
@@ -699,7 +699,7 @@ sub Test::Modern::_TD::AUTOLOAD
 		
 		local $Test::Builder::Level = $Test::Builder::Level + 1;
 		
-		subtest $name => sub
+		&subtest($name => sub
 		{
 			my %versions;
 			for my $file (@files)
@@ -716,7 +716,7 @@ sub Test::Modern::_TD::AUTOLOAD
 					for sort keys(%versions);
 			}
 			done_testing;
-		};
+		});
 	};
 	
 	_wrap("Test::Pod", "pod_file_ok", extended => 1);
