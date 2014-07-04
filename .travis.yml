@@ -1,40 +1,40 @@
 language: perl
 perl:
-  - "5.19"
-  - "5.18.1_thr"
-  - "5.18"
-  - "5.16"
-  - "5.14.2_thr"
-  - "5.14"
-  - "5.12"
-  - "5.10.0_thr"
-  - "5.10"
-  - "5.8.9"
-  - "5.8.3"
+  - "5.6.1"
+  - "5.6.2"
   - "5.8.1"
-before_install:
-  - source devel.travis/travis-perlbrew
-  - perlbrew install-cpanm -f
-  - perl -V
-install:
-  # Ensure new enough Exporter for Try::Tiny (which in turn requires new Carp)
-  - cpanm -n Carp
-  - cpanm Exporter
-  # IPC::Cmd seems to fail tests randomly sometimes on Perl 5.8
-  - cpanm -n IPC::Cmd Module::Build
-  - cpanm Exporter::Tiny Import::Into Module::Runtime Try::Tiny
-  - cpanm Test::More Test::Fatal Test::LongString Test::Deep Test::Warnings
-  - cpanm Test::API
-script:
-  - prove -Ilib t
+  - "5.8.3"
+  - "5.8.9"
+  - "5.8.9_thr"
+  - "5.10"
+  - "5.12"
+  - "5.14"
+  - "5.16"
+  - "5.20.0"
+  - "5.20.0_thr"
+  - "blead"
 matrix:
   include:
-    - perl:    "5.6.1"
-      install: echo "Everything should be in devel.perl56/lib/perl5..."
-      script:  perl -Idevel.perl56/lib/perl5 -Idevel.perl56/lib/perl5/i686-linux devel.perl56/bin/prove -Idevel.perl56/lib/perl5 -Idevel.perl56/lib/perl5/i686-linux -Ilib t
-    - perl:    "5.6.2"
-      install: echo "Everything should be in devel.perl56/lib/perl5..."
-      script:  perl -Idevel.perl56/lib/perl5 -Idevel.perl56/lib/perl5/i686-linux devel.perl56/bin/prove -Idevel.perl56/lib/perl5 -Idevel.perl56/lib/perl5/i686-linux -Ilib t
+    - perl: 5.18
+      env: COVERAGE=1
+before_install:
+  - export DIST_INKT_PROFILE="Dist::Inkt::Profile::TOBYINK"
+  - git clone git://github.com/haarg/perl-travis-helper
+  - source perl-travis-helper/init
+  - build-perl
+  - perl -V
+  - build-dist
+  - cd $BUILD_DIR
+install:
+  - cpan-install --toolchain  # installs a vaguely recent EUMM, Exporter
+  - cpan-install --deps       # installs prereqs, including recommends
+  - cpan-install --coverage   # installs converage prereqs, if enabled
+before_script:
+  - coverage-setup
+script:
+  - prove -l $(test-dirs)
+after_success:
+  - coverage-report
 notifications:
   irc:
     channels:
