@@ -7,6 +7,8 @@ package Test::Modern;
 our $AUTHORITY = 'cpan:TOBYINK';
 our $VERSION   = '0.009';
 
+our $VERBOSE;
+
 use Cwd              0     qw();
 use Exporter::Tiny   0.030 qw();
 use File::Spec       0     qw();
@@ -184,6 +186,15 @@ $HINTS{ lib } = sub { $_[3]{lib}++; () };
 	};
 }
 
+$HINTS{ benchmark } = sub
+{
+	return qw(is_fastest)
+		if $ENV{RELEASE_TESTING} || $ENV{EXTENDED_TESTING};
+	plan skip_all => 'Not running benchmarks';
+};
+
+$HINTS{ verbose } = sub { $VERBOSE = 1; () };
+
 our @ISA = qw(Exporter::Tiny);
 our %EXPORT_TAGS = (
 	more     => [qw(
@@ -220,7 +231,7 @@ our %EXPORT_TAGS = (
 );
 
 our @EXPORT_OK = (
-	'object_ok', 'shouldnt_warn',
+	'object_ok', 'shouldnt_warn', 'is_fastest',
 	map(@$_, grep { ref($_) eq 'ARRAY' } values(%EXPORT_TAGS)),
 );
 
@@ -743,6 +754,68 @@ sub shouldnt_warn (&)
 	$TODO = $old;
 }
 
+{
+	# When passed a string of code, Benchmark::timethis() evaluates
+	# it in the caller package; need to fake that.
+	my $_do = sub {
+		my $caller = shift;
+		my $sub    = shift;
+		my $doer   = eval qq[ package $caller; sub { ${sub}(\@_) } ];
+		$doer->(@_);
+	};
+	
+	my $get_res = sub {
+		require Benchmark;
+		require Scalar::Util;
+		my ($caller, $times, $sub) = @_;
+		Scalar::Util::blessed($sub) && $sub->isa("Benchmark")
+			? $sub
+			: $caller->$_do('Benchmark::timethis', $times, $sub, "", "none");
+	};
+	
+	sub is_fastest
+	{
+		require Benchmark;
+		
+		my $caller = caller;
+		my ($which, $times, $marks, $desc) = @_;
+		$desc = "$which is fastest" unless defined $desc;
+		
+		my @marks;
+		while (my ($name, $sub) = each %$marks)
+		{
+			my $res = $get_res->($caller, $times, $sub);
+			my ($r, $pu, $ps, $cu, $cs, $n) = @$res;
+			
+			push(@marks, {
+				name => $name,
+				res  => $res,
+				n    => $n,
+				s    => ($pu+$ps),
+			});
+		}
+		
+		@marks = sort {$b->{n} * $a->{s} <=> $a->{n} * $b->{s}} @marks;
+		
+		my $ok = $marks[0]->{name} eq $which;
+		
+		local $Test::Builder::Level = $Test::Builder::Level + 1;
+		
+		ok($ok, $desc);
+		diag("$which was not the fastest") unless $ok;
+		
+		if ($VERBOSE or not $ok)
+		{
+			foreach my $mark (@marks)
+			{
+				diag("$mark->{name} - " . Benchmark::timestr($mark->{res}));
+			}
+		}
+		
+		$ok;
+	}
+}
+
 1;
 
 ## no Test::Tabs
@@ -1082,6 +1155,51 @@ in a subtest, so the whole thing will only count as one test.
 
 =back
 
+=head2 Features inspired by Test::Benchmark
+
+Test::Modern does not use L<Test::Benchmark>, but does provide the
+following feature inspired by it:
+
+=over
+
+=item C<< is_fastest($implementation, $times, \%implementations, $desc) >>
+
+   use Test::Modern qw( is_fastest );
+   
+   is_fastest("speedy", -1, {
+      "speedy"     => sub { ... },
+      "slowcoach"  => sub { ... },
+   });
+
+This ensures that the named coderef runs the fastest out of a hashref
+of alternatives. The C<< -1 >> parameter in the example is the number
+of times to run the coderefs (see L<Benchmark> for more details,
+including how numbers less than zero are interpreted).
+
+=back
+
+B<< Caveat: >> on fast computers, a set of coderefs that you might
+expect to differ in speed might all run in a negligible period of
+time, and thus be rounded to zero, in which case your test case could
+randomly fail. Use this test with caution!
+
+B<< Caveat the second: >> these tests tend to be slow. Use sparingly.
+
+Because of the aforementioned caveats, it is a good idea to move your
+benchmarking tests into separate test scripts, keeping an imaginary wall
+between them and the bulk of your test suite (which tests correctness
+rather than speed).
+
+Test::Modern provides an import hint suitable for including at the top
+of these benchmarking tests to mark them as being primarily concerned
+with speed:
+
+   use Test::Modern -benchmark;
+
+This will not only import the C<is_fastest> function, but will also
+I<< skip the entire script >> unless one of the C<EXTENDED_TESTING> or
+C<RELEASE_TESTING> environment variables is set.
+
 =head2 Features inspired by Test::Requires
 
 Test::Modern does not use L<Test::Requires>, but does provide the
@@ -1321,6 +1439,10 @@ C<shouldnt_warn>.
 
 Classify the test script.
 
+=item C<< -benchmark >>
+
+The test script consists mostly of benchmarking.
+
 =item C<< -internet >>
 
 The test script requires Internet access.
@@ -1334,6 +1456,11 @@ Specify modules required or hidden for these test cases.
 Makes the absence of a C<< t/lib >> directory fatal.
 
 See L</"Features inspired by Test::Lib">.
+
+=item C<< -verbose >>
+
+Makes test output more verbose. (Currently only C<is_faster> takes notice
+of this.)
 
 =back
 
@@ -1352,7 +1479,8 @@ version-checking. See L</"Features from Test::Pod and Test::Coverage">
 and L</"Features from Test::Version">.
 
 They also can trigger certain import tags to skip a test script. See
-L</"Features inspired by Test::DescribeMe">.
+L</"Features inspired by Test::DescribeMe">, and
+L</"Features inspired by Test::Benchmark">
 
 =item C<NO_NETWORK_TESTS>
 
