@@ -413,6 +413,7 @@ sub object_ok
 	my $object = shift;
 	my $name   = (@_%2) ? shift : '$object';
 	my %tests  = @_;
+	my $bail   = !!0;
 	
 	my $result = &subtest("$name ok", sub
 	{
@@ -478,10 +479,12 @@ sub object_ok
 			});
 		}
 		
+		$bail = !!keys %tests;
+		
 		done_testing;
 	});
 	
-	if (keys %tests)
+	if ($bail)
 	{
 		my $huh = join q[, ], sort keys %tests;
 		BAIL_OUT("object_ok cannot understand: $huh");
