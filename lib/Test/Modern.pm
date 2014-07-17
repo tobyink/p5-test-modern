@@ -720,7 +720,9 @@ sub Test::Modern::_TD::AUTOLOAD
 			{
 				Test::Version::version_ok($file) or next;				
 				my $info = Module::Metadata->new_from_file($file);
-				push @{$versions{$info->version}}, $file;
+				my $ver  = $info->version;
+				$ver = '(undef)' unless defined $ver;
+				push @{$versions{$ver}}, $file;
 			}
 			my $ok = keys(%versions) < 2;
 			ok($ok, "single version number found");
