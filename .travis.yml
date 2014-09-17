@@ -10,8 +10,8 @@ perl:
   - "5.12"
   - "5.14"
   - "5.16"
-  - "5.20.0"
-  - "5.20.0-thr"
+  - "5.20"
+  - "5.20-thr"
   - "blead"
 matrix:
   include:
@@ -19,16 +19,16 @@ matrix:
       env: COVERAGE=1
 before_install:
   - export DIST_INKT_PROFILE="Dist::Inkt::Profile::TOBYINK"
-  - git clone git://github.com/haarg/perl-travis-helper
+  - git clone git://github.com/tobyink/perl-travis-helper
   - source perl-travis-helper/init
   - build-perl
   - perl -V
   - build-dist
   - cd $BUILD_DIR
 install:
-  - cpan-install --toolchain  # installs a vaguely recent EUMM, Exporter
-  - cpan-install --deps       # installs prereqs, including recommends
-  - cpan-install --coverage   # installs converage prereqs, if enabled
+  - cpan-install --toolchain
+  - cpan-install --deps
+  - cpan-install --coverage
 before_script:
   - coverage-setup
 script:
