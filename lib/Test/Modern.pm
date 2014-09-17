@@ -5,7 +5,7 @@ use warnings;
 package Test::Modern;
 
 our $AUTHORITY = 'cpan:TOBYINK';
-our $VERSION   = '0.010';
+our $VERSION   = '0.011';
 
 our $VERBOSE;
 
@@ -20,7 +20,6 @@ use Test::More       0.96;
 use Test::API        0.004;
 use Test::Fatal      0.007;
 use Test::Warnings   0.009 qw( warning warnings ), ($ENV{PERL_TEST_MODERN_ALLOW_WARNINGS} ? ':no_end_test' : ());
-use Test::LongString 0.15;
 use Test::Deep       0.111 qw( :v1 );
 use Try::Tiny        0.15  qw( try catch );
 
@@ -492,6 +491,78 @@ sub object_ok
 	
 	# return $object
 	$result ? $object : ();
+}
+
+{
+	my $wrap = sub {
+		my @alts = @_;
+		my $chosen;
+		return sub {
+			unless ($chosen)
+			{
+				ALT: for (@alts)
+				{
+					ref($_) and ($chosen = $_) and last ALT;
+					my ($module, $sub) = /^(.+)::(\w+)$/;
+					try {
+						no strict qw(refs);
+						no warnings qw(exiting);
+						require_module($module);
+						exists(&$_)
+							? (($chosen = \&$_) and last ALT)
+							: die("no such sub $_");
+					}
+					catch {
+						diag("could not load $module: $_");
+					};
+				}
+			}
+			$chosen
+				? goto($chosen)
+				: fail("$alts[0] not available - failing test!")
+		};
+	};
+	
+	*is_string = $wrap->(
+		'Test::LongString::is_string',
+		'Test::More::is',
+	);
+	*is_string_nows = $wrap->(
+		'Test::LongString::is_string_nows',
+		sub {
+			my $got      = shift;
+			my $expected = shift;
+			s/\s+//g for $got, $expected;
+			unshift @_, $got, $expected;
+			goto \&Test::More::is;
+		},
+	);
+	*like_string = $wrap->(
+		'Test::LongString::like_string',
+		'Test::More::like',
+	);
+	*unlike_string = $wrap->(
+		'Test::LongString::unlike_string',
+		'Test::More::unlike',
+	);
+	*contains_string = $wrap->(
+		'Test::LongString::contains_string',
+		sub {
+			my $got      = shift;
+			my $expected = shift;
+			unshift @_, $got, qr/\Q$expected\E/;
+			goto \&Test::More::like;
+		},
+	);
+	*lacks_string = $wrap->(
+		'Test::LongString::lacks_string',
+		sub {
+			my $got      = shift;
+			my $expected = shift;
+			unshift @_, $got, qr/\Q$expected\E/;
+			goto \&Test::More::unlike;
+		},
+	);
 }
 
 sub _generate_TD
@@ -991,6 +1062,12 @@ Test::Modern exports the following subs from L<Test::LongString>:
 =item C<< lacks_string($haystack, $needle, $description) >>
 
 =back
+
+Actually Test::Modern provides these via a wrapper. If Test::LongString
+is not installed then Test::Modern will provide a fallback
+implementation using Test::More's C<is>, C<isnt>, C<like>, and
+C<unlike> functions. (The diagnostics won't be as good in the case of
+failures.)
 
 =head2 Features from Test::Deep
 

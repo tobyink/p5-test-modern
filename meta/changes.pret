@@ -143,3 +143,9 @@
 		item "Fix the behaviour of the BAIL_OUT called within object_ok."^^Bugfix;
 	].
 
+`Test-Modern 0.011 cpan:TOBYINK`
+	issued  2014-09-17;
+	changeset [
+		item "version_all_same now copes better with undef versions."^^Change;
+	].
+
