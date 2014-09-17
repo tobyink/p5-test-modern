@@ -20,6 +20,5 @@
 	:test-conflict          [ :on "Local::This::Probably::Does::Not::Exist"^^:CpanId ];
 	:test-conflict          [ :on "Local::I::Doubt::This::Exists::Either"^^:CpanId ];
 	:test-conflict          [ :on "Moose::This::Should::Not::Be::A::Real::Package"^^:CpanId ];
-	:develop-suggestion     [ :on "Dist::Inkt::Profile::TOBYINK 0.023"^^:CpanId ];
-	.
+	:develop-suggestion     [ :on "Dist::Inkt::Profile::TOBYINK 0.023"^^:CpanId ].
 
