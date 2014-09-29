@@ -149,3 +149,9 @@
 		item "version_all_same now copes better with undef versions."^^Change;
 	].
 
+`Test-Modern 0.012 cpan:TOBYINK`
+	issued  2014-09-30;
+	changeset [
+		item "does_ok no longer calls the internal Test::Builder `_try` method."^^Change;
+	].
+
