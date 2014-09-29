@@ -347,7 +347,8 @@ sub does_ok ($$;$) # just a copy of Test::More::isa_ok
 		$whatami = 'class';
 	}
 	
-	my( $rslt, $error ) = $tb->_try( sub { $thing->DOES($class) } );
+	my ($rslt, $error);
+	try { $rslt = $thing->DOES($class) } catch { $error = $_ };
 	
 	if ($error) {
 		die <<WHOA unless $error =~ /^Can't (locate|call) method "DOES"/;
