@@ -155,3 +155,9 @@
 		item "does_ok no longer calls the internal Test::Builder `_try` method."^^Change;
 	].
 
+`Test-Modern 0.013 cpan:TOBYINK`
+	issued  2014-10-05;
+	changeset [
+		item "Add 'test recommends' dependencies on a few modules."^^Packaging;
+	].
+
