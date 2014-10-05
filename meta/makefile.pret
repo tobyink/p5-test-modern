@@ -17,6 +17,9 @@
 	:runtime-suggestion     [ :on "Test::Pod"^^:CpanId ];
 	:runtime-suggestion     [ :on "Test::Pod::Coverage"^^:CpanId ];
 	:runtime-suggestion     [ :on "Test::Version"^^:CpanId ];
+	:test-recommendation    [ :on "Moose"^^:CpanId ];
+	:test-recommendation    [ :on "namespace::clean"^^:CpanId ];
+	:test-recommendation    [ :on "LWP::UserAgent"^^:CpanId ];
 	:test-conflict          [ :on "Local::This::Probably::Does::Not::Exist"^^:CpanId ];
 	:test-conflict          [ :on "Local::I::Doubt::This::Exists::Either"^^:CpanId ];
 	:test-conflict          [ :on "Moose::This::Should::Not::Be::A::Real::Package"^^:CpanId ];
